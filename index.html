@@ -3,7 +3,7 @@
 
 <head>
 <meta charset="UTF-8">
-<title>Benelux OPS Tool</title>
+<title>Arrow Benelux Email Tool</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
@@ -354,14 +354,14 @@ padding:12px 0;
 }
 
 
-/* Button groups */
-
+/* Button groups — restore clear vertical spacing without changing button layout */
 .button-group{
 display:flex;
-gap:10px;
+column-gap:10px;
+row-gap:10px;
 flex-wrap:wrap;
 justify-content:center;
-margin:0 0 5px 0;
+margin:0 0 10px 0;
 }
 
 /* Responsive */
@@ -398,59 +398,68 @@ opacity:0;
 }
 }
 
-/* Toggle */
-
+/* Theme selector — option D, square-cornered frame with clickable sun and moon */
 .theme-toggle{
-display:flex;
-align-items:center;
-gap:6px;
-margin-left:6px;
+  position:relative;
+  isolation:isolate;
+  display:flex;
+  align-items:center;
+  gap:2px;
+  margin-left:6px;
+  padding:3px;
+  border:1px solid rgba(120,130,145,.22);
+  border-radius:16px;
+  background:rgba(120,130,145,.10);
+  flex:0 0 auto;
+  overflow:hidden;
 }
+.theme-toggle::before{
+  content:"";
+  position:absolute;
+  z-index:-1;
+  top:3px;
+  left:3px;
+  width:42px;
+  height:40px;
+  border-radius:12px;
+  background:#1687ff;
+  box-shadow:0 3px 10px rgba(22,135,255,.32);
+  transform:translateX(0);
+  transition:transform .48s cubic-bezier(.34,1.56,.64,1),background .25s,box-shadow .25s;
+  pointer-events:none;
+}
+.theme-choice{
+  position:relative;
+  z-index:1;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  width:42px;
+  height:40px;
+  border:0;
+  border-radius:12px;
+  background:transparent;
+  color:#64748b;
+  cursor:pointer;
+  transition:color .25s ease,transform .22s ease;
+}
+.theme-choice svg{width:21px;height:21px;display:block;}
+.theme-choice[aria-pressed="true"]{color:#fff;}
+.theme-choice:active{transform:scale(.92);}
+.theme-choice:focus-visible{outline:2px solid #4ea2ff;outline-offset:2px;}
+.darkmode .theme-toggle{background:rgba(255,255,255,.07);border-color:rgba(255,255,255,.12);}
+.darkmode .theme-toggle::before{transform:translateX(44px);background:#71839a;box-shadow:0 3px 12px rgba(113,131,154,.32);}
+.darkmode .theme-choice{color:#aeb9c7;}
+.darkmode .theme-choice[aria-pressed="true"]{color:#fff;}
 
-.switch{
-position:relative;
-display:inline-block;
-width:46px;
-height:24px;
+/* The sun icon glows bright yellow only while dark mode is active */
+.darkmode #lightThemeButton,
+.darkmode #lightThemeButton svg{
+  color:#ffdf35;
+  filter:drop-shadow(0 0 4px rgba(255,220,35,.95)) drop-shadow(0 0 9px rgba(255,190,0,.7));
 }
-
-.switch input{
-opacity:0;
-width:0;
-height:0;
-}
-
-.slider{
-position:absolute;
-cursor:pointer;
-top:0;
-left:0;
-right:0;
-bottom:0;
-background:#cfd2d6;
-transition:.3s;
-border-radius:20px;
-}
-
-.slider:before{
-position:absolute;
-content:"";
-height:18px;
-width:18px;
-left:3px;
-bottom:3px;
-background:white;
-transition:.3s;
-border-radius:50%;
-}
-
-input:checked + .slider{
-background:#4ea2ff;
-}
-
-input:checked + .slider:before{
-transform:translateX(22px);
-}
+#lightThemeButton,
+#lightThemeButton svg{filter:none;}
 
 .moon-icon{
 display:inline-flex;
@@ -685,11 +694,54 @@ body:not(.darkmode) .section{
 }
 
 
-    .mini-flag { display:inline-flex; width:20px; height:14px; margin-left:8px; vertical-align:middle; align-items:center; justify-content:center; border-radius:2px; overflow:hidden; box-shadow:0 2px 4px rgba(0,0,0,.22), 0 0 0 1px rgba(255,255,255,.45); flex-shrink:0; transform:skewX(-12deg) rotate(-3deg); transform-origin:center; transition:transform .18s ease, box-shadow .18s ease; }
+    /* Uniform flags with the same subtle light-gray outline as the Luxembourg reference */
+    .mini-flag {
+      display:inline-flex;
+      box-sizing:content-box;
+      width:27px;
+      height:18px;
+      padding:1px;
+      margin-left:8px;
+      vertical-align:middle;
+      align-items:center;
+      justify-content:center;
+      border:1px solid #BFC5CC;
+      border-radius:2px;
+      overflow:hidden;
+      background:transparent;
+      box-shadow:0 1px 2px rgba(0,0,0,.16);
+      flex-shrink:0;
+      transform:skewX(-12deg) rotate(-3deg);
+      transform-origin:center;
+      transition:transform .18s ease, box-shadow .18s ease;
+    }
     .mini-flag svg { display:block; width:100%; height:100%; }
-    .mini-flag.belux-flags { width:34px; gap:2px; overflow:visible; box-shadow:none; background:transparent; }
-    .mini-flag.belux-flags svg { width:16px; height:12px; border-radius:2px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,.2), 0 0 0 1px rgba(255,255,255,.4); }
-    .po-button:hover .mini-flag { transform:skewX(-12deg) rotate(0deg) translateY(-1px); box-shadow:0 3px 6px rgba(0,0,0,.26), 0 0 0 1px rgba(255,255,255,.55); }
+    .mini-flag.belux-flags {
+      width:58px;
+      gap:2px;
+      overflow:visible;
+      border:0;
+      padding:0;
+      box-shadow:none;
+      background:transparent;
+    }
+    .mini-flag.belux-flags svg {
+      box-sizing:content-box;
+      width:27px;
+      height:18px;
+      padding:1px;
+      border:1px solid #BFC5CC;
+      border-radius:2px;
+      overflow:hidden;
+      background:transparent;
+      box-shadow:0 1px 2px rgba(0,0,0,.16);
+    }
+    .po-button:hover .mini-flag {
+      transform:skewX(-12deg) rotate(0deg) translateY(-1px);
+      box-shadow:0 2px 4px rgba(0,0,0,.20);
+    }
+    .po-button:hover .mini-flag.belux-flags { box-shadow:none; }
+    .po-button:hover .mini-flag.belux-flags svg { box-shadow:0 2px 4px rgba(0,0,0,.20); }
 
 /* Keep standalone section titles at their original size; only logo/icon headings are reduced minimally */
 .section h2:not(:has(.section-title-icon)){
@@ -779,6 +831,19 @@ function toggleDarkMode(){
   }, 350);
 }
 
+function toggleThemeSelector(){
+  setThemeMode(!document.body.classList.contains('darkmode'));
+}
+
+function setThemeMode(isDark){
+  const currentlyDark = document.body.classList.contains('darkmode');
+  if (currentlyDark !== isDark) toggleDarkMode();
+  const lightButton = document.getElementById('lightThemeButton');
+  const darkButton = document.getElementById('darkThemeButton');
+  if (lightButton) lightButton.setAttribute('aria-pressed', String(!isDark));
+  if (darkButton) darkButton.setAttribute('aria-pressed', String(isDark));
+}
+
 function getPO(id){
 return document.getElementById(id).value;
 }
@@ -841,15 +906,13 @@ showAll();
   <span class="menu-title-icon all-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="3" y="3.5" width="18" height="17" rx="2.5" stroke="currentColor" stroke-width="1.7"/><path d="M3.5 9H20.5M9 9V20" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><circle cx="5.8" cy="6.3" r=".65" fill="currentColor"/><circle cx="8" cy="6.3" r=".65" fill="currentColor"/><path d="M11.5 12H17.5M11.5 15H17.5M11.5 18H17.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg></span><span class="menu-label">Overview</span>
 </button>
 
-<div class="theme-toggle">
-
-<label class="switch">
-<input type="checkbox" onclick="toggleDarkMode()">
-<span class="slider"></span>
-</label>
-
-<span class="moon-icon" aria-label="Changer de thème" title="Changer de thème"><svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><circle cx="10.5" cy="11" r="4.1" stroke="currentColor" stroke-width="1.8"/><path d="M10.5 3.8V2.5M10.5 19.5v-1.3M3.3 11H2M19 11h-1.3M5.4 5.9l-.9-.9M16.5 17l-.9-.9M5.4 16.1l-.9.9M16.5 5l-.9.9" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/><path d="M22.9 7.1a8.4 8.4 0 1 0 2.3 15.8 8.5 8.5 0 0 1-2.3-15.8Z" fill="currentColor" fill-opacity=".18" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg></span>
-
+<div class="theme-toggle" role="group" aria-label="Basculer entre le mode clair et le mode sombre" title="Cliquer n’importe où pour changer de thème" onclick="toggleThemeSelector()">
+  <button type="button" class="theme-choice" id="lightThemeButton" aria-label="Mode clair" title="Mode clair" aria-pressed="true" >
+    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><circle cx="12" cy="12" r="4" stroke="currentColor" stroke-width="1.8"/><path d="M12 2v2M12 20v2M4.93 4.93l1.42 1.42M17.65 17.65l1.42 1.42M2 12h2M20 12h2M4.93 19.07l1.42-1.42M17.65 6.35l1.42-1.42" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+  </button>
+  <button type="button" class="theme-choice" id="darkThemeButton" aria-label="Mode sombre" title="Mode sombre" aria-pressed="false" >
+    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M20.2 15.1A8.6 8.6 0 0 1 8.9 3.8 8.8 8.8 0 1 0 20.2 15.1Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="m16.5 3 .5 1.5 1.5.5-1.5.5-.5 1.5-.5-1.5-1.5-.5 1.5-.5.5-1.5Z" fill="currentColor"/></svg>
+  </button>
 </div>
 
 </div>
@@ -1017,16 +1080,7 @@ showAll();
 
 <div class="link-card">
       <a class="po-button" href="https://www.ibm.com/support/customer/invoices/" target="_blank" rel="noopener noreferrer">IBM Invoices</a>
-      <div class="login-line">
-        anne-michele.schoepp@arrow.com
-        <span class="material-icons icon-btn" onclick="copyText('anne-michele.schoepp@arrow.com',this)">content_copy</span>
-      </div>
-      <div class="pwd-line">
-        <span id="pwd_ibm" class="pwd">Logixbelux1</span>
-        
-        <button type="button" class="eye-btn" aria-label="Afficher le mot de passe" title="Afficher/masquer" onclick="togglePwd('pwd_ibm',this)"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2.2 12s3.4-6.3 9.8-6.3 9.8 6.3 9.8 6.3-3.4 6.3-9.8 6.3S2.2 12 2.2 12Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><circle cx="12" cy="12" r="3.1" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M4.3 4.3 19.7 19.7" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" class="eye-slash"/></svg></button>
-        <span class="material-icons icon-btn" onclick="copyText('Logixbelux1',this)">content_copy</span>
-      </div>
+
     </div>
 
 <div class="link-card">
@@ -1053,7 +1107,7 @@ showAll();
       <a class="po-button" href="https://arrow.service-now.com/myconnect" target="_blank" rel="noopener noreferrer">My Connect<span class="link-portal-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="16" y="2" width="6" height="6" rx="1" stroke="currentColor" stroke-width="1.7"/><rect x="2" y="2" width="6" height="6" rx="1" stroke="currentColor" stroke-width="1.7"/><rect x="9" y="16" width="6" height="6" rx="1" stroke="currentColor" stroke-width="1.7"/><path d="M5 8v3a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V8M12 12v4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
     </div>
         <div class="link-card">
-      <a class="po-button" href="https://arrowelectronics.sharepoint.com/sites/OPSBENELUX/Shared%20Documents/Forms/AllItems.aspx?id=%2Fsites%2FOPSBENELUX%2FShared%20Documents%2FOperations%2FOperations%2FHOW%20TO%20PO&viewid=afce92dd%2Defeb%2D4fc0%2Da35b%2D1222dfb32f27&csf=1&web=1&e=HhEdIZ&CID=19927652%2Dcce5%2D432d%2Da459%2Ddf4cf9de24e0&FolderCTID=0x012000898CCE8524C8A541B23D7D695A79388B" target="_blank" rel="noopener noreferrer">How to PO<span class="link-portal-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M14 2v6h6M8 13l2.2 2.2L15.5 10" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+      <a class="po-button" href="https://ecsemeawc.arrow.com/arwquoting/" target="_blank" rel="noopener noreferrer">myWORKspace<span class="mws-mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="3" y="3" width="8" height="5" rx="1" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><rect x="3" y="11" width="8" height="10" rx="1" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><rect x="14" y="3" width="7" height="8" rx="1" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><rect x="14" y="14" width="7" height="7" rx="1" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg></span></a>
     </div>
         <div class="link-card">
       <a class="po-button" href="https://app.medius.com/arrow" target="_blank" rel="noopener noreferrer">Medius<span class="link-portal-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M6 3.5h8l4 4V13" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/><path d="M14 3.5v4h4M6 3.5A2 2 0 0 0 4 5.5v13A2 2 0 0 0 6 20.5h5" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M7.5 10h5M7.5 13h4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><circle cx="16.5" cy="16.5" r="3.2" stroke="currentColor" stroke-width="1.7"/><path d="m19 19 2 2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></span></a>
@@ -1085,25 +1139,25 @@ showAll();
 
 <a class="po-button"
 onclick="sendMail('send', 'tmilenkova@cbtw.tech;be_timesheet@cbtw.tech;cvanderstichelen@cbtw.tech;santoine@cbtw.tech;Yeranik.Tuken@arrow.com;mcirlan@cbtw.tech;mcirlan@cbtw.tech',
-'Hello%20Team,%0D%0A%0D%0AAttached%20you%20will%20find%20our%20purchase%20order%20with%20reference%20number%20'+getPO('po-send')+'%0D%0A%0D%0APlease%20refer%20to%20special%20instructions%20at%20the%20bottom%20of%20our%20PO.%0D%0A%0D%0ASend%20estimated%20delivery%20dates%20and%20confirmation%20of%20delivery%20to%20belux.licence.ecs.be@arrow.com%0D%0A%0D%0AKind%20regards,')">
+'Hello%20Team,%0D%0A%0D%0AAttached%20you%20will%20find%20our%20purchase%20order%20with%20reference%20number%20'+getPO('po-send')+'%0D%0A%0D%0ASend%20estimated%20delivery%20dates%20and%20confirmation%20of%20delivery%20to%20belux.licence.ecs.be@arrow.com%0D%0A%0D%0AKind%20regards,')">
 Better Collab Belux</a>
 
 <a class="po-button"
 onclick="sendMail('send', 'tmilenkova@cbtw.tech;be_timesheet@cbtw.tech;cvanderstichelen@cbtw.tech;santoine@cbtw.tech;Yeranik.Tuken@arrow.com;mcirlan@cbtw.tech;mcirlan@cbtw.tech',
-'Hello%20Team,%0D%0A%0D%0AAttached%20you%20will%20find%20our%20purchase%20order%20with%20reference%20number%20'+getPO('po-send')+'%0D%0A%0D%0APlease%20refer%20to%20special%20instructions%20at%20the%20bottom%20of%20our%20PO.%0D%0A%0D%0ASend%20estimated%20delivery%20dates%20and%20confirmation%20of%20delivery%20to%20license.ecs.nl@arrow.com%0D%0A%0D%0AKind%20regards,')">
+'Hello%20Team,%0D%0A%0D%0AAttached%20you%20will%20find%20our%20purchase%20order%20with%20reference%20number%20'+getPO('po-send')+'%0D%0A%0D%0ASend%20estimated%20delivery%20dates%20and%20confirmation%20of%20delivery%20to%20license.ecs.nl@arrow.com%0D%0A%0D%0AKind%20regards,')">
 Better Collab NL
 </a>
 
 <a class="po-button"
-onclick="sendMail('send', 'dswom.benelux@ie.ibm.com;dina.boschmans@be.ibm.com',
-'Hello%20Team,%0D%0A%0D%0APlease%20find%20attached%20our%20order%20'+getPO('po-send')+'%0D%0A%0D%0AKind%20regards,')">
-IBM PA
+onclick="sendMail('send', 'order.ecs.dk@arrow.com',
+'Hello%20Team,%0D%0A%0D%0APlease%20process%20the%20attached%20order.%0D%0A%0D%0AThanks,%0D%0A%0D%0AKind%20regards,')">
+Arrow DK
 </a>
 
 <a class="po-button"
-onclick="sendMail('send', 'dswom.benelux@ie.ibm.com;dina.boschmans@be.ibm.com',
-'Hello%20Team,%0D%0A%0D%0APlease%20find%20here%20the%20FOC.%0D%0A%0D%0AThis%20is%20to%20confirm%20that%20effective%20D%3F%20we%20or%20our%20reseller%20R%3F%20have%20accepted%20a%20firm%20and%20final%20order%20from%20EU%3F%0D%0A%0D%0AThis%20email%20documents%20our%20commitment%20to%20place%20a%20firm%20order%20on%20IBM%20consistent%20with%20the%20purchase%20order%20'+getPO('po-send')+'%20or%20any%20legally%20binding%20document%20we%20our%20reseller%20received%20from%20this%20customer.%0D%0A%0D%0AKind%20regards,')">
-FOC IBM PA
+onclick="sendMail('send', 'vat.ecs.benelux@arrow.com',
+'Hello%20Team,%0D%0A%0D%0ACould%20you%20please%20release%20this%20order%20from%20cross%20border%3F%20'+getPO('po-send')+'%0D%0A%0D%0AThank%20you.%0D%0A%0D%0AKind%20regards,')">
+Cross Border
 </a>
 
 </div>
@@ -1174,16 +1228,16 @@ Druva NL
 
   <!-- Commvault Belux MTL -->
   <a class="po-button"
-  onclick="sendMail('send', 'mboeijen@commvault.com;emeaorderentry@commvault.com;servicecontractsemea@commvault.com;gverheul@commvault.com;orders@metallic.io',
-  'Hello%20Team,%0D%0A%0D%0AAttached%20you%20will%20find%20our%20purchase%20order%20with%20reference%20number%20'+getPO('po-send')+'%0D%0A%0D%0ASend%20estimated%20delivery%20dates%20and%20confirmation%20of%20delivery%20to%20belux.licence.ecs.be@arrow.com%0D%0A%0D%0AKind%20regards,')">
-  Commvault Belux MTL</a>
-
-  <!-- Commvault NL -->
-  <a class="po-button"
   onclick="sendMail('send', 'mboeijen@commvault.com;emeaorderentry@commvault.com;servicecontractsemea@commvault.com;gverheul@commvault.com',
   'Hello%20Team,%0D%0A%0D%0AAttached%20you%20will%20find%20our%20purchase%20order%20with%20reference%20number%20'+getPO('po-send')+'%0D%0A%0D%0ASend%20estimated%20delivery%20dates%20and%20confirmation%20of%20delivery%20to%20license.ecs.nl@arrow.com%0D%0A%0D%0AKind%20regards,')">
   Commvault NL
   </a>
+
+  <!-- Commvault NL -->
+  <a class="po-button"
+  onclick="sendMail('send', 'mboeijen@commvault.com;emeaorderentry@commvault.com;servicecontractsemea@commvault.com;gverheul@commvault.com;orders@metallic.io',
+  'Hello%20Team,%0D%0A%0D%0AAttached%20you%20will%20find%20our%20purchase%20order%20with%20reference%20number%20'+getPO('po-send')+'%0D%0A%0D%0ASend%20estimated%20delivery%20dates%20and%20confirmation%20of%20delivery%20to%20belux.licence.ecs.be@arrow.com%0D%0A%0D%0AKind%20regards,')">
+  Commvault Belux MTL</a>
 
   <!-- Commvault NL MTL -->
   <a class="po-button"
@@ -1205,13 +1259,13 @@ EnterDB
 
 <a class="po-button"
 onclick="sendMail('send', 'Aslihan.Kabadayi@eu.equinix.com;Marta.Trebicka@eu.equinix.com;Alex.Schaap@eu.equinix.com;Liesbeth.Vrolijk@eu.equinix.com;COMsupport@equinix.com',
-'Hello%20Team,%0D%0A%0D%0AAttached%20you%20will%20find%20our%20purchase%20order%20with%20reference%20number%20'+getPO('po-send')+'%0D%0A%0D%0APlease%20refer%20to%20special%20instructions%20at%20the%20bottom%20of%20our%20PO.%0D%0A%0D%0ASend%20estimated%20delivery%20dates%20and%20confirmation%20of%20delivery%20to%20belux.licence.ecs.be@arrow.com%0D%0A%0D%0AKind%20regards,')">
+'Hello%20Team,%0D%0A%0D%0AAttached%20you%20will%20find%20our%20purchase%20order%20with%20reference%20number%20'+getPO('po-send')+'%0D%0A%0D%0ASend%20estimated%20delivery%20dates%20and%20confirmation%20of%20delivery%20to%20belux.licence.ecs.be@arrow.com%0D%0A%0D%0AKind%20regards,')">
 Equinix
 </a>
 
 <a class="po-button"
 onclick="sendMail('send', 'globalop@everfox.com;lauren.marsden@everfox.com;brad.bleeck@everfox.com;Robbert.deBles@arrow.com;lauren.marsden@everfox.com;brad.bleeck@everfox.com;Robbert.deBles@arrow.com',
-'Hello%20Team,%0D%0A%0D%0AAttached%20you%20will%20find%20our%20purchase%20order%20with%20reference%20number%20'+getPO('po-send')+'%0D%0A%0D%0APlease%20refer%20to%20special%20instructions%20at%20the%20bottom%20of%20our%20PO.%0D%0A%0D%0ASend%20estimated%20delivery%20dates%20and%20confirmation%20of%20delivery%20to%20belux.licence.ecs.be@arrow.com%0D%0A%0D%0AKind%20regards,')">
+'Hello%20Team,%0D%0A%0D%0AAttached%20you%20will%20find%20our%20purchase%20order%20with%20reference%20number%20'+getPO('po-send')+'%0D%0A%0D%0ASend%20estimated%20delivery%20dates%20and%20confirmation%20of%20delivery%20to%20belux.licence.ecs.be@arrow.com%0D%0A%0D%0AKind%20regards,')">
 Everfox
 </a>
 
@@ -1221,6 +1275,30 @@ onclick="sendMail('send', 'E.Orders@F5.com;emeadistiteam@f5.com;emearenewals@f5.
 F5
 </a>
 
+<a class="po-button"
+onclick="sendMail('send', 'jovan.pavlovic@hycu.com;kristina.radojevic@hycu.com',
+'Hello%20Team,%0D%0A%0D%0AAttached%20you%20will%20find%20our%20purchase%20order%20with%20reference%20number%20'+getPO('po-send')+'%0D%0A%0D%0ASend%20estimated%20delivery%20dates%20and%20confirmation%20of%20delivery%20to%20belux.licence.ecs.be@arrow.com%0D%0A%0D%0AKind%20regards,')">
+HYCU Belux
+</a>
+
+<a class="po-button"
+onclick="sendMail('send', 'jovan.pavlovic@hycu.com;kristina.radojevic@hycu.com',
+'Hello%20Team,%0D%0A%0D%0AAttached%20you%20will%20find%20our%20purchase%20order%20with%20reference%20number%20'+getPO('po-send')+'%0D%0A%0D%0ASend%20estimated%20delivery%20dates%20and%20confirmation%20of%20delivery%20to%20license.ecs.nl@arrow.com%0D%0A%0D%0AKind%20regards,')">
+HYCU NL
+</a>
+
+<a class="po-button"
+onclick="sendMail('send', 'dswom.benelux@ie.ibm.com;dina.boschmans@be.ibm.com',
+'Hello%20Team,%0D%0A%0D%0APlease%20find%20attached%20our%20order%20'+getPO('po-send')+'%0D%0A%0D%0AKind%20regards,')">
+IBM PA
+</a>
+
+<a class="po-button"
+onclick="sendMail('send', 'dswom.benelux@ie.ibm.com;dina.boschmans@be.ibm.com',
+'Hello%20Team,%0D%0A%0D%0APlease%20find%20here%20the%20FOC.%0D%0A%0D%0AThis%20is%20to%20confirm%20that%20effective%20D%3F%20we%20or%20our%20reseller%20R%3F%20have%20accepted%20a%20firm%20and%20final%20order%20from%20EU%3F%0D%0A%0D%0AThis%20email%20documents%20our%20commitment%20to%20place%20a%20firm%20order%20on%20IBM%20consistent%20with%20the%20purchase%20order%20'+getPO('po-send')+'%20or%20any%20legally%20binding%20document%20we%20our%20reseller%20received%20from%20this%20customer.%0D%0A%0D%0AKind%20regards,')">
+FOC IBM PA
+</a>
+
 </div>
 
 <!-- Microfocus / Arrow DK / Nvidia -->
@@ -1228,24 +1306,24 @@ F5
 
 <a class="po-button"
 onclick="sendMail('send', 'abulfinsky@opentext.com;mdeyredk@opentext.com;isinnamon@opentext.com',
-'Hello%20Team,%0D%0A%0D%0AAttached%20you%20will%20find%20our%20purchase%20order%20with%20reference%20number%20'+getPO('po-send')+'%0D%0A%0D%0APlease%20refer%20to%20special%20instructions%20at%20the%20bottom%20of%20our%20PO.%0D%0A%0D%0ASend%20estimated%20delivery%20dates%20and%20confirmation%20of%20delivery%20to%20license.ecs.nl@arrow.com%0D%0A%0D%0AKind%20regards,')">
+'Hello%20Team,%0D%0A%0D%0AAttached%20you%20will%20find%20our%20purchase%20order%20with%20reference%20number%20'+getPO('po-send')+'%0D%0A%0D%0ASend%20estimated%20delivery%20dates%20and%20confirmation%20of%20delivery%20to%20license.ecs.nl@arrow.com%0D%0A%0D%0AKind%20regards,')">
 Microfocus
 </a>
 
 <a class="po-button"
-onclick="sendMail('send', 'order.ecs.dk@arrow.com',
-'Hello%20Team,%0D%0A%0D%0APlease%20process%20the%20attached%20order.%0D%0A%0D%0AThanks,%0D%0A%0D%0AKind%20regards,')">
-Arrow DK
+onclick="sendMail('send', 'intercompany.ecs.de@arrow.com;serviceportal.ecs.nl@arrow.com',
+'Hello%20Team,%0D%0A%0D%0AMay%20you%20please%20process%20the%20attached%20storage%20guard%20order.%0D%0A%0D%0AThank%20you.%0D%0A%0D%0AKind%20regards,')">
+NetApp Storage Guard
 </a>
 
 <a class="po-button"
 onclick="sendMail('send', 'POUS@nvidia.com;SalesOps-emeai@nvidia.com',
-'Hello%20Team,%0D%0A%0D%0AAttached%20you%20will%20find%20our%20purchase%20order%20with%20reference%20number%20'+getPO('po-send')+'%0D%0A%0D%0APlease%20refer%20to%20special%20instructions%20at%20the%20bottom%20of%20our%20PO.%0D%0A%0D%0ASend%20estimated%20delivery%20dates%20and%20confirmation%20of%20delivery%20to%20belux.licence.ecs.be@arrow.com%0D%0A%0D%0AKind%20regards,')">
+'Hello%20Team,%0D%0A%0D%0AAttached%20you%20will%20find%20our%20purchase%20order%20with%20reference%20number%20'+getPO('po-send')+'%0D%0A%0D%0ASend%20estimated%20delivery%20dates%20and%20confirmation%20of%20delivery%20to%20belux.licence.ecs.be@arrow.com%0D%0A%0D%0AKind%20regards,')">
 Nvidia New Sale Belux</a>
 
 <a class="po-button"
 onclick="sendMail('send', 'POUS@nvidia.com;SalesOps-emeai@nvidia.com',
-'Hello%20Team,%0D%0A%0D%0AAttached%20you%20will%20find%20our%20purchase%20order%20with%20reference%20number%20'+getPO('po-send')+'%0D%0A%0D%0APlease%20refer%20to%20special%20instructions%20at%20the%20bottom%20of%20our%20PO.%0D%0A%0D%0ASend%20estimated%20delivery%20dates%20and%20confirmation%20of%20delivery%20to%20license.ecs.nl@arrow.com%0D%0A%0D%0AKind%20regards,')">
+'Hello%20Team,%0D%0A%0D%0AAttached%20you%20will%20find%20our%20purchase%20order%20with%20reference%20number%20'+getPO('po-send')+'%0D%0A%0D%0ASend%20estimated%20delivery%20dates%20and%20confirmation%20of%20delivery%20to%20license.ecs.nl@arrow.com%0D%0A%0D%0AKind%20regards,')">
 Nvidia New Sale NL
 </a>
 
@@ -1256,24 +1334,30 @@ Nvidia New Sale NL
 
 <a class="po-button"
 onclick="sendMail('send', 'michiel.vanvelzen@prolion.com;global-orders@prolion.com',
-'Hello%20Team,%0D%0A%0D%0AAttached%20you%20will%20find%20our%20purchase%20order%20with%20reference%20number%20'+getPO('po-send')+'%0D%0A%0D%0APlease%20refer%20to%20special%20instructions%20at%20the%20bottom%20of%20our%20PO.%0D%0A%0D%0ASend%20estimated%20delivery%20dates%20and%20confirmation%20of%20delivery%20to%20belux.licence.ecs.be@arrow.com%0D%0A%0D%0AKind%20regards,')">
-Prolion
+'Hello%20Team,%0D%0A%0D%0AAttached%20you%20will%20find%20our%20purchase%20order%20with%20reference%20number%20'+getPO('po-send')+'%0D%0A%0D%0ASend%20estimated%20delivery%20dates%20and%20confirmation%20of%20delivery%20to%20belux.licence.ecs.be@arrow.com%0D%0A%0D%0AKind%20regards,')">
+Prolion Belux
 </a>
 
 <a class="po-button"
-onclick="sendMail('send', 'order@scality.com;kevin.hylton@scality.com;daniela.cozma@scality.com',
-'Hello%20Team,%0D%0A%0D%0AAttached%20you%20will%20find%20our%20purchase%20order%20with%20reference%20number%20'+getPO('po-send')+'%0D%0A%0D%0ASend%20estimated%20delivery%20dates%20and%20confirmation%20of%20delivery%20to%20belux.licence.ecs.be@arrow.com%0D%0A%0D%0AKind%20regards,')">
-Scality
+onclick="sendMail('send', 'michiel.vanvelzen@prolion.com;global-orders@prolion.com',
+'Hello%20Team,%0D%0A%0D%0AAttached%20you%20will%20find%20our%20purchase%20order%20with%20reference%20number%20'+getPO('po-send')+'%0D%0A%0D%0ASend%20estimated%20delivery%20dates%20and%20confirmation%20of%20delivery%20to%20license.ecs.nl@arrow.com%0D%0A%0D%0AKind%20regards,')">
+Prolion NL
 </a>
+
+
+
+
+
+
 
 <a class="po-button"
 onclick="sendMail('send', 'renewalsales@nvidia.com;SalesOps-emeai@nvidia.com;POUS@nvidia.com',
-'Hello%20Team,%0D%0A%0D%0AAttached%20you%20will%20find%20our%20purchase%20order%20with%20reference%20number%20'+getPO('po-send')+'%0D%0A%0D%0APlease%20refer%20to%20special%20instructions%20at%20the%20bottom%20of%20our%20PO.%0D%0A%0D%0ASend%20estimated%20delivery%20dates%20and%20confirmation%20of%20delivery%20to%20belux.licence.ecs.be@arrow.com%0D%0A%0D%0AKind%20regards,')">
+'Hello%20Team,%0D%0A%0D%0AAttached%20you%20will%20find%20our%20purchase%20order%20with%20reference%20number%20'+getPO('po-send')+'%0D%0A%0D%0ASend%20estimated%20delivery%20dates%20and%20confirmation%20of%20delivery%20to%20belux.licence.ecs.be@arrow.com%0D%0A%0D%0AKind%20regards,')">
 Nvidia Renewal Belux</a>
 
 <a class="po-button"
 onclick="sendMail('send', 'renewalsales@nvidia.com;SalesOps-emeai@nvidia.com;POUS@nvidia.com',
-'Hello%20Team,%0D%0A%0D%0AAttached%20you%20will%20find%20our%20purchase%20order%20with%20reference%20number%20'+getPO('po-send')+'%0D%0A%0D%0APlease%20refer%20to%20special%20instructions%20at%20the%20bottom%20of%20our%20PO.%0D%0A%0D%0ASend%20estimated%20delivery%20dates%20and%20confirmation%20of%20delivery%20to%20license.ecs.nl@arrow.com%0D%0A%0D%0AKind%20regards,')">
+'Hello%20Team,%0D%0A%0D%0AAttached%20you%20will%20find%20our%20purchase%20order%20with%20reference%20number%20'+getPO('po-send')+'%0D%0A%0D%0ASend%20estimated%20delivery%20dates%20and%20confirmation%20of%20delivery%20to%20license.ecs.nl@arrow.com%0D%0A%0D%0AKind%20regards,')">
 Nvidia Renewal NL
 </a>
 
@@ -1311,17 +1395,6 @@ Radware
 <div class="button-group">
 
 <a class="po-button"
-onclick="sendMail('send', 'porubrik@rubrik.com',
-'Hello%20Team,%0D%0A%0D%0AAttached%20you%20will%20find%20our%20purchase%20order%20with%20reference%20number%20'+getPO('po-send')+'%0D%0A%0D%0APlease%20refer%20to%20special%20instructions%20at%20the%20bottom%20of%20our%20PO.%0D%0A%0D%0ASend%20estimated%20delivery%20dates%20and%20confirmation%20of%20delivery%20to%20belux.licence.ecs.be@arrow.com%0D%0A%0D%0AKind%20regards,')">
-Rubrik SW Belux</a>
-
-<a class="po-button"
-onclick="sendMail('send', 'porubrik@rubrik.com;sophia.rogers@rubrik.com',
-'Hello%20Team,%0D%0A%0D%0AAttached%20you%20will%20find%20our%20purchase%20order%20with%20reference%20number%20'+getPO('po-send')+'%0D%0A%0D%0APlease%20refer%20to%20special%20instructions%20at%20the%20bottom%20of%20our%20PO.%0D%0A%0D%0ASend%20estimated%20delivery%20dates%20and%20confirmation%20of%20delivery%20to%20license.ecs.nl@arrow.com%0D%0A%0D%0AKind%20regards,')">
-Rubrik SW NL
-</a>
-
-<a class="po-button"
 onclick="sendMail('send', 'renewals-emea@riverbed.com;orders@riverbed.com;philip.cope@riverbed.com',
 'Hello%20Team,%0D%0A%0D%0AAttached%20you%20will%20find%20our%20purchase%20order%20with%20reference%20number%20'+getPO('po-send')+'%0D%0A%0D%0ASend%20estimated%20delivery%20dates%20and%20confirmation%20of%20delivery%20to%20belux.licence.ecs.be@arrow.com%0D%0A%0D%0AKind%20regards,')">
 Riverbed Belux</a>
@@ -1332,6 +1405,17 @@ onclick="sendMail('send', 'renewals-emea@riverbed.com;Michelle.Strange@riverbed.
 Riverbed NL
 </a>
 
+<a class="po-button"
+onclick="sendMail('send', 'porubrik@rubrik.com',
+'Hello%20Team,%0D%0A%0D%0AAttached%20you%20will%20find%20our%20purchase%20order%20with%20reference%20number%20'+getPO('po-send')+'%0D%0A%0D%0ASend%20estimated%20delivery%20dates%20and%20confirmation%20of%20delivery%20to%20belux.licence.ecs.be@arrow.com%0D%0A%0D%0AKind%20regards,')">
+Rubrik SW Belux</a>
+
+<a class="po-button"
+onclick="sendMail('send', 'porubrik@rubrik.com',
+'Hello%20Team,%0D%0A%0D%0AAttached%20you%20will%20find%20our%20purchase%20order%20with%20reference%20number%20'+getPO('po-send')+'%0D%0A%0D%0ASend%20estimated%20delivery%20dates%20and%20confirmation%20of%20delivery%20to%20license.ecs.nl@arrow.com%0D%0A%0D%0AKind%20regards,')">
+Rubrik SW NL
+</a>
+
 </div>
 
 <!-- Rubrik HW / Schneider -->
@@ -1340,13 +1424,13 @@ Riverbed NL
   <!-- Rubrik HW Belux -->
   <a class="po-button"
   onclick="sendMail('send', 'epo@supermicro.com;rubrik4smc@supermicro.com',
-  'Attached%20you%20will%20find%20our%20purchase%20order%20with%20reference%20number%20'+getPO('po-send')+'%0D%0A%0D%0APlease%20refer%20to%20special%20instructions%20at%20the%20bottom%20of%20our%20PO.%0D%0A%0D%0ASend%20estimated%20delivery%20dates%20and%20confirmation%20of%20delivery%20to%20belux.licence.ecs.be@arrow.com%0D%0A%0D%0AKind%20regards,')">
+  'Attached%20you%20will%20find%20our%20purchase%20order%20with%20reference%20number%20'+getPO('po-send')+'%0D%0A%0D%0ASend%20estimated%20delivery%20dates%20and%20confirmation%20of%20delivery%20to%20belux.licence.ecs.be@arrow.com%0D%0A%0D%0AKind%20regards,')">
   Rubrik HW Belux</a>
 
   <!-- Rubrik HW NL -->
   <a class="po-button"
   onclick="sendMail('send', 'epo@supermicro.com;rubrik4smc@supermicro.com',
-  'Hello%20Team,%0D%0A%0D%0AAttached%20you%20will%20find%20our%20purchase%20order%20with%20reference%20number%20'+getPO('po-send')+'%0D%0A%0D%0APlease%20refer%20to%20special%20instructions%20at%20the%20bottom%20of%20our%20PO.%0D%0A%0D%0ASend%20estimated%20delivery%20dates%20and%20confirmation%20of%20delivery%20to%20license.ecs.nl@arrow.com%0D%0A%0D%0AKind%20regards,')">
+  'Hello%20Team,%0D%0A%0D%0AAttached%20you%20will%20find%20our%20purchase%20order%20with%20reference%20number%20'+getPO('po-send')+'%0D%0A%0D%0ASend%20estimated%20delivery%20dates%20and%20confirmation%20of%20delivery%20to%20license.ecs.nl@arrow.com%0D%0A%0D%0AKind%20regards,')">
   Rubrik HW NL
   </a>
 
@@ -1406,10 +1490,12 @@ onclick="sendMail('send', 'epo@supermicro.com;levig@supermicro.com;TiestS@superm
 Supermicro NL
 </a>
 
+
+
 <a class="po-button"
-onclick="sendMail('send', 'intercompany.ecs.de@arrow.com;serviceportal.ecs.nl@arrow.com',
-'Hello%20Team,%0D%0A%0D%0AMay%20you%20please%20process%20the%20attached%20storage%20guard%20order.%0D%0A%0D%0AThank%20you.%0D%0A%0D%0AKind%20regards,')">
-NetApp Storage Guard
+onclick="sendMail('send', 'order@scality.com;kevin.hylton@scality.com;daniela.cozma@scality.com',
+'Hello%20Team,%0D%0A%0D%0AAttached%20you%20will%20find%20our%20purchase%20order%20with%20reference%20number%20'+getPO('po-send')+'%0D%0A%0D%0ASend%20estimated%20delivery%20dates%20and%20confirmation%20of%20delivery%20to%20belux.licence.ecs.be@arrow.com%0D%0A%0D%0AKind%20regards,')">
+Scality
 </a>
 
 <a class="po-button"
@@ -1419,6 +1505,8 @@ Vast Data
 </a>
 
 </div>
+
+
 </div>
 
 <!-- Chase Delivery Section -->
@@ -1467,11 +1555,11 @@ Vast Data
     CheckPoint
     </a>
 
-    <!-- Fortinet -->
+    <!-- IBM SERV -->
     <a class="po-button"
-    onclick="sendMail('chase', 'mkerasoviti@fortinet.com;orders@fortinet.com;cfields@fortinet.com',
-    'Hello%20Team,%0A%0ACould%20you%20please%20give%20us%20an%20update%20on%20the%20status%20of%20this%20order%20PO%20'+getPO('po-chase')+'%0A%0AThanks%20in%20advance.%0A%0AKind%20regards,')">
-    Fortinet
+    onclick="sendMail('send', '',
+    'Hello%20Team,%0A%0ACould%20you%20please%20advise%20why%20the%20status%20of%20this%20order%20is%20pending%20'+getPO('po-send')+'%0A%0AKind%20regards,')">
+    IBM SERV
     </a>
 
     <!-- IBM ESA -->
@@ -1492,13 +1580,13 @@ Vast Data
     <a class="po-button"
     onclick="sendMail('chase', 'palogin@ie.ibm.com;dswom.benelux@ie.ibm.com;dina.boschmans@be.ibm.com;darina.stelbasska@sk.ibm.com',
     'Hello%20Team,%0A%0AWe%20are%20reaching%20out%20to%20follow%20up%20for%20PO%20'+getPO('po-chase')+'%0A%0ACould%20you%20please%20check%20and%20share%20the%20POE%20with%20us%3F%0A%0AKind%20regards,')">
-    IBM PA Belux</a>
+    IBM PA <span class="mini-flag belux-flags" aria-label="Belgique et Luxembourg" title="Belgique et Luxembourg"><svg viewBox="0 0 24 16" aria-hidden="true"><rect width="8" height="16" fill="#111"/><rect x="8" width="8" height="16" fill="#FCD116"/><rect x="16" width="8" height="16" fill="#EF3340"/></svg><svg viewBox="0 0 24 16" aria-hidden="true"><rect width="24" height="5.34" fill="#ED2939"/><rect y="5.33" width="24" height="5.34" fill="#fff"/><rect y="10.66" width="24" height="5.34" fill="#00A1DE"/></svg></span></a>
 
     <!-- IBM PA NL -->
     <a class="po-button"
-    onclick="sendMail('chase', 'palogin@ie.ibm.com;dswom.benelux@ie.ibm.com;darina.stelbasska@sk.ibm.com',
+    onclick="sendMail('chase', 'palogin@ie.ibm.com;dswom.benelux@ie.ibm.com;darina.stelbasska@sk.ibm.com;Deepika.K1@ibm.com',
     'Hello%20Team,%0A%0AWe%20are%20reaching%20out%20to%20follow%20up%20for%20PO%20'+getPO('po-chase')+'%0A%0ACould%20you%20please%20check%20and%20share%20the%20POE%20with%20us%3F%0A%0AKind%20regards,')">
-    IBM PA NL
+    IBM PA <span class="mini-flag" aria-label="Pays-Bas" title="Pays-Bas"><svg viewBox="0 0 24 16" aria-hidden="true"><rect width="24" height="5.34" fill="#AE1C28"/><rect y="5.33" width="24" height="5.34" fill="#fff"/><rect y="10.66" width="24" height="5.34" fill="#21468B"/></svg></span>
     </a>
 
   </div>
@@ -1581,6 +1669,64 @@ Vast Data
 #menu .menu-btn[onclick="showSection('chase-delivery')"] .menu-label{display:inline-flex;align-items:center;line-height:1.2;vertical-align:middle;margin:0;padding:0;} 
 .menu-title-icon.all-icon{width:21px;height:21px}
 .menu-btn:hover .menu-title-icon{transform:rotate(0deg) translateY(-1px);filter:drop-shadow(0 2px 2px rgba(0,0,0,.22))}
+
+/* MyWorkspace icon: transparent panels, matching the other quick-access buttons */
+.mws-mark{display:inline-flex;align-items:center;justify-content:center;vertical-align:middle;margin-left:10px;width:22px;height:22px;flex:0 0 22px;color:#fff;box-sizing:border-box}
+.mws-mark svg{display:block;width:100%;height:100%;stroke:currentColor}
+.link-card .po-button{display:inline-flex;align-items:center;justify-content:center;gap:2px}
+
+
+    /* All flag badges now use the same light-gray outline. */
+
+
+/* Favoris Send PO — effet 3 : Neon bleu électrique */
+#sendpo .po-button.neon-favorite {
+  position: relative;
+  isolation: isolate;
+  border: 1px solid rgba(128, 220, 255, .95) !important;
+  box-shadow: 0 0 0 1px rgba(30, 155, 255, .28),
+              0 0 8px rgba(0, 174, 255, .48),
+              0 0 17px rgba(0, 123, 255, .25),
+              0 3px 6px rgba(0,0,0,.15) !important;
+  animation: arrowNeonPulse 2.6s ease-in-out infinite;
+}
+#sendpo .po-button.neon-favorite:hover {
+  box-shadow: 0 0 0 1px rgba(190, 240, 255, .95),
+              0 0 12px rgba(0, 190, 255, .85),
+              0 0 25px rgba(0, 123, 255, .55),
+              0 8px 18px rgba(0,0,0,.18) !important;
+}
+@keyframes arrowNeonPulse {
+  0%, 100% { box-shadow: 0 0 0 1px rgba(30,155,255,.22), 0 0 6px rgba(0,174,255,.32), 0 0 13px rgba(0,123,255,.18), 0 3px 6px rgba(0,0,0,.15); }
+  50% { box-shadow: 0 0 0 1px rgba(150,225,255,.9), 0 0 12px rgba(0,190,255,.72), 0 0 22px rgba(0,123,255,.4), 0 3px 6px rgba(0,0,0,.15); }
+}
+
+/* Reflet lumineux qui fait le tour du cadre — conserve le fond d'origine, notamment en mode dark */
+#sendpo .po-button.border-sweep {
+  position: relative;
+  isolation: isolate;
+  z-index: 0;
+}
+#sendpo .po-button.border-sweep::before {
+  content: "";
+  position: absolute;
+  inset: -2px;
+  border-radius: inherit;
+  padding: 2px;
+  background: conic-gradient(from 0deg, transparent 0 68%, #D9F7FF 78%, #46CFFF 84%, #FFFFFF 88%, transparent 96% 100%);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+  z-index: 2;
+  animation: arrowBorderSweep 2.4s linear infinite;
+}
+@keyframes arrowBorderSweep { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) {
+  #sendpo .po-button.neon-favorite { animation: none; }
+  #sendpo .po-button.border-sweep::before { animation: none; }
+}
+
 </style>
 
 <script>
@@ -1663,5 +1809,30 @@ function sendMail(sectionType, to, body) {
 
   window.open(url, '_blank');
 }
+
+
+
+// Apply the requested light effects only to selected Send PO buttons.
+document.addEventListener('DOMContentLoaded', function () {
+  const neonLabels = new Set([
+    'Cloudian Belux', 'Cloudian NL',
+    'Rubrik HW Belux', 'Rubrik HW NL',
+    'Rubrik SW Belux', 'Rubrik SW NL',
+    'Splunk Belux', 'Splunk NL',
+    'Druva Belux', 'Druva NL',
+    'Scality',
+    'Nvidia Renewal NL',
+    'Nvidia New Sale NL'
+  ]);
+  const sweepLabels = new Set([
+    'Splunk NL',
+    'F5'
+  ]);
+  document.querySelectorAll('#sendpo .po-button').forEach(function (button) {
+    const label = button.textContent.replace(/\s+/g, ' ').trim();
+    if (neonLabels.has(label)) button.classList.add('neon-favorite');
+    if (sweepLabels.has(label)) button.classList.add('border-sweep');
+  });
+});
 
 </script>
