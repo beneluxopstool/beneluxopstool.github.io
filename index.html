@@ -3,7 +3,7 @@
 
 <head>
 <meta charset="UTF-8">
-<title>Arrow Benelux Email Tool</title>
+<title>Arrow Benelux Operations Tool — Uniform Top Lines Through Menu</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
@@ -84,8 +84,8 @@ position:relative;
 isolation:isolate;
 cursor:pointer;
 text-align:center;
-margin:4px 0 42px;
-padding-bottom:13px;
+margin:4px 0 26px;
+padding-bottom:0;
 font-family:'Sora','Inter',sans-serif;
 font-weight:700;
 font-size:clamp(27px,3.45vw,40px);
@@ -158,16 +158,8 @@ filter:blur(10px);
 }
 
 h1::after{
-content:"";
-position:absolute;
-left:50%;
-bottom:0;
-transform:translateX(-50%);
-width:228px;
-height:4px;
-border-radius:999px;
-background:linear-gradient(90deg,#C18B50,#007BFF);
-box-shadow:0 2px 5px rgba(38,52,73,.12);
+  content:none !important;
+  display:none !important;
 }
 
 /* Menu */
@@ -244,6 +236,85 @@ transform:translateY(1px);
   font-size: 16px !important;
   line-height: 1.2;
   vertical-align: middle;
+}
+
+
+/* Top navigation: same rotating light-ring effect as the selected Chase Delivery buttons */
+#menu .menu-btn{
+  position:relative;
+  isolation:isolate;
+  overflow:hidden;
+  border:1px solid transparent;
+  background-clip:padding-box;
+}
+#menu .menu-btn::before{
+  content:"";
+  position:absolute;
+  z-index:-2;
+  inset:-150%;
+  background:conic-gradient(from 0deg, transparent 0deg, transparent 285deg, #62c5ff 315deg, #ffffff 332deg, #62c5ff 348deg, transparent 360deg);
+  animation:chaseLightRing 2.6s linear infinite;
+  pointer-events:none;
+}
+#menu .menu-btn::after{
+  content:"";
+  position:absolute;
+  z-index:-1;
+  inset:1px;
+  border-radius:7px;
+  background:inherit;
+  pointer-events:none;
+}
+#menu .menu-btn .menu-title-icon, #menu .menu-btn .menu-label{position:relative;z-index:1;}
+@media(prefers-reduced-motion:reduce){#menu .menu-btn::before{animation:none;}}
+
+
+/* Light Sweep uniquement sur les boutons SEND PO et Overview du menu supérieur */
+#menu > button.menu-btn:nth-of-type(2) .send-po-light-sweep,
+#menu > button.menu-btn[onclick="showAll()"] .send-po-light-sweep{
+  position:absolute;
+  top:-35%;
+  bottom:-35%;
+  left:-65%;
+  width:42%;
+  pointer-events:none;
+  z-index:2;
+  background:linear-gradient(105deg, transparent 0%, rgba(255,255,255,.08) 25%, rgba(255,255,255,.78) 50%, rgba(98,197,255,.38) 65%, transparent 100%);
+  transform:skewX(-18deg) translateX(-160%);
+  animation:sendPoLightSweep 3.2s ease-in-out infinite;
+}
+@keyframes sendPoLightSweep{
+  0%, 18% { transform:skewX(-18deg) translateX(-160%); opacity:0; }
+  25% { opacity:1; }
+  55% { transform:skewX(-18deg) translateX(390%); opacity:.95; }
+  65%, 100% { transform:skewX(-18deg) translateX(390%); opacity:0; }
+}
+@media(prefers-reduced-motion:reduce){
+  #menu > button.menu-btn:nth-of-type(2) .send-po-light-sweep,
+  #menu > button.menu-btn[onclick="showAll()"] .send-po-light-sweep{animation:none;display:none;}
+}
+
+
+/* Fusion des effets 5 (Neon Border) + 6 (Press & Elevate), menu supérieur uniquement */
+#menu > button.menu-btn:nth-of-type(-n+4){
+  transition: transform .22s cubic-bezier(.2,.8,.2,1), box-shadow .22s ease, filter .22s ease;
+  box-shadow: 0 3px 7px rgba(20,45,75,.16);
+}
+#menu > button.menu-btn:nth-of-type(-n+4):hover{
+  transform: translateY(-2px);
+  box-shadow: 0 7px 16px rgba(0,120,255,.24), 0 0 0 1px rgba(75,177,255,.75), 0 0 10px rgba(0,140,255,.24);
+  filter: brightness(1.035);
+}
+#menu > button.menu-btn:nth-of-type(-n+4).active{
+  transform: translateY(-1px);
+  box-shadow: 0 5px 12px rgba(0,120,255,.22), 0 0 0 1px rgba(75,177,255,.95), 0 0 12px rgba(0,140,255,.26);
+}
+#menu > button.menu-btn:nth-of-type(-n+4):active{
+  transform: translateY(1px) scale(.992);
+  box-shadow: 0 1px 4px rgba(20,45,75,.2), 0 0 0 1px rgba(75,177,255,.9);
+}
+@media(prefers-reduced-motion:reduce){
+  #menu > button.menu-btn:nth-of-type(-n+4){transition:none;}
 }
 
 /* Sections */
@@ -354,13 +425,13 @@ padding:12px 0;
 }
 
 
-/* Button groups — restore clear vertical spacing without changing button layout */
+/* Button groups — align every row from the left to avoid centered gaps */
 .button-group{
 display:flex;
 column-gap:10px;
 row-gap:10px;
 flex-wrap:wrap;
-justify-content:center;
+justify-content:flex-start;
 margin:0 0 10px 0;
 }
 
@@ -556,6 +627,17 @@ transition:color .25s ease, transform .25s ease, filter .25s ease;
 #links.section{
   animation:none !important;
 }
+/* Dark mode: remove outlines/borders only from the requested vendor buttons. */
+.darkmode #links .po-button.dark-no-outline,
+.darkmode #links .po-button.dark-no-outline:hover,
+.darkmode #links .po-button.dark-no-outline:focus,
+.darkmode #links .po-button.dark-no-outline:focus-visible,
+.darkmode #links .po-button.dark-no-outline:active{
+  border:0 !important;
+  outline:none !important;
+  box-shadow:none !important;
+}
+
 /* Theme switch: prevent portal-card fade/expand effects during light/dark changes */
 #links.theme-switching-links,
 #links.theme-switching-links *,
@@ -803,15 +885,15 @@ function animateSection(section){
 }
 
 function showSection(id){
-  document.querySelectorAll('.section').forEach(s=>{s.style.display='none'; s.style.animationDelay='0ms';});
+  document.querySelectorAll('.section').forEach(s=>{s.style.setProperty('display','none','important'); s.style.animationDelay='0ms';});
   const section=document.getElementById(id);
-  if(section){ section.style.display='block'; animateSection(section); }
+  if(section){ section.style.setProperty('display', id === 'sendpo' ? 'grid' : 'block', 'important'); animateSection(section); }
   updateActiveMenu(id);
 }
 
 function showAll(){
   document.querySelectorAll('.section').forEach((s,index)=>{
-    s.style.display='block';
+    s.style.setProperty('display', s.id === 'sendpo' ? 'grid' : 'block', 'important');
     s.style.animationDelay=(index*70)+'ms';
     animateSection(s);
   });
@@ -880,13 +962,247 @@ showAll();
 
 </script>
 
+
+<style id="right-it-animations-style">
+/* Wide, symmetrical circuit decoration: kept behind the dashboard content. */
+#circuit-backdrop{position:fixed;inset:0;width:100%;height:100vh;z-index:0;pointer-events:none;overflow:visible;opacity:.8;filter:drop-shadow(0 0 5px rgba(0,145,255,.12));}
+#circuit-backdrop .trace{fill:none;stroke:url(#traceBlue);stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round;opacity:.58;}
+#circuit-backdrop .trace-fine{fill:none;stroke:#5abaff;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;opacity:.36;}
+#circuit-backdrop .pulse{fill:none;stroke:#52bfff;stroke-width:1.15;stroke-dasharray:none;stroke-linecap:round;animation:none;opacity:.55;filter:none;}
+#circuit-backdrop .top-line-a{fill:none;stroke:#42b8ff;stroke-width:1.1;stroke-linecap:round;stroke-linejoin:round;opacity:.66;}
+#circuit-backdrop .top-line-b{fill:none;stroke:#42b8ff;stroke-width:1.1;stroke-linecap:round;stroke-linejoin:round;opacity:.66;}
+#circuit-backdrop .travelling-pulse{fill:none;stroke:#d5f5ff;stroke-width:1.25;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:3 27;stroke-dashoffset:0;opacity:.72;filter:drop-shadow(0 0 2px rgba(75,190,255,.45));animation:lowerCircuitFlow 5.8s linear infinite;}
+#circuit-backdrop .travelling-pulse.pulse-b{stroke:#79bfff;animation-duration:7.2s;animation-direction:reverse;}
+#circuit-backdrop .travelling-pulse.top-static{display:none!important;}
+@keyframes lowerCircuitFlow{to{stroke-dashoffset:-300}}
+#circuit-backdrop .node{fill:#7ed7ff;opacity:.55;filter:none;animation:none;}
+#circuit-backdrop .chip{fill:rgba(24,133,207,.045);stroke:#4db9ff;stroke-width:1.2;opacity:.55;}
+.container{position:relative;z-index:1;}
+@media(max-width:1249px){#circuit-backdrop{opacity:.38}}
+@media(max-width:850px){#circuit-backdrop{opacity:.2}}
+#circuit-backdrop .trace, #circuit-backdrop .trace-fine, #circuit-backdrop .pulse, #circuit-backdrop .node, #circuit-backdrop .chip{transition:none!important;}
+@media(prefers-reduced-motion:reduce){#circuit-backdrop .travelling-pulse{animation:none;}}
+</style>
+
+
+<style id="single-animation-override">
+/* Circuit électronique uniquement */
+#right-it-animations .rack, #right-it-animations .equalizer{display:none!important}
+</style>
+
+<style id="light-sweep-title-only">
+/* Aucun balayage sur Send PO / Overview : conserver seulement l’anneau tournant. */
+#menu > button.menu-btn:nth-of-type(2) .send-po-light-sweep,
+#menu > button.menu-btn[onclick="showAll()"] .send-po-light-sweep {
+  display: none !important;
+  animation: none !important;
+}
+/* Balayage visible uniquement sur les lettres du grand titre. */
+h1 .title-word {
+  position: relative;
+  display: inline-block;
+  isolation: isolate;
+}
+h1 .title-word::after {
+  content: attr(data-text);
+  position: absolute;
+  inset: 0;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+  background: linear-gradient(105deg, transparent 0%, transparent 34%, rgba(139,190,255,.52) 48%, rgba(92,157,255,.62) 54%, rgba(139,190,255,.22) 60%, transparent 68%, transparent 100%);
+  background-size: 250% 100%;
+  background-position: 130% 0;
+  background-clip: text;
+  -webkit-background-clip: text;
+  pointer-events: none;
+  animation: titleWordsLightSweep 4.2s ease-in-out infinite;
+}
+h1 .title-word:nth-child(2)::after { animation-delay: .18s; }
+@keyframes titleWordsLightSweep {
+  0%, 15% { background-position: 130% 0; opacity: 0; }
+  25% { opacity: .95; }
+  58% { background-position: -130% 0; opacity: .9; }
+  68%, 100% { background-position: -130% 0; opacity: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  h1 .title-word::after { animation: none !important; display: none !important; }
+}
+</style>
+<style id="remove-yellow-button-frames-and-default-dark-mode">
+/* Requested: no special frames around the previously outlined Send PO buttons. */
+#sendpo .po-button.yellow-outline,
+.darkmode #sendpo .po-button.yellow-outline,
+.darkmode #sendpo .po-button.yellow-outline:hover {
+  border: 0 !important;
+  outline: 0 !important;
+  box-shadow: none !important;
+}
+</style>
+
+<style id="restore-gray-section-navigation-buttons">
+/* Restore the original gray on the four top navigation buttons only. */
+#menu > button.menu-btn:nth-of-type(-n+4),
+#menu > button.menu-btn:nth-of-type(-n+4):hover,
+#menu > button.menu-btn:nth-of-type(-n+4).active,
+#menu > button.menu-btn:nth-of-type(-n+4):active {
+  color: #FFFFFF !important;
+  background: #59616B !important;
+}
+#menu > button.menu-btn:nth-of-type(-n+4):hover {
+  background: #687381 !important;
+}
+</style>
+<style id="sections-90-percent-transparent-both-themes">
+/* Section backgrounds are 90% transparent in both light and dark modes. */
+body:not(.darkmode) .section {
+  background: rgba(251, 249, 245, 0.1) !important;
+}
+.darkmode .section {
+  background: rgba(65, 71, 79, 0.1) !important;
+}
+</style>
 </head>
 
-<body>
+<body class="darkmode">
+<div id="cursor-spotlight" aria-hidden="true"></div>
+
+
+<svg id="circuit-backdrop" viewBox="0 0 1600 900" preserveAspectRatio="none" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="traceBlue" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#72cfff"/><stop offset=".55" stop-color="#178dff"/><stop offset="1" stop-color="#8bdcff"/></linearGradient>
+    <linearGradient id="topGlow" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#1e9fff" stop-opacity="0"/><stop offset=".5" stop-color="#32baff" stop-opacity=".42"/><stop offset="1" stop-color="#1e9fff" stop-opacity="0"/></linearGradient>
+  </defs>
+  <!-- Fine top traces sit behind the large heading without crossing its letters. -->
+  <path class="trace-fine" d="M0 58H110V80H180 M1420 80H1490V58H1600 M0 96H74V112H150 M1450 112H1526V96H1600"/>
+  <circle class="node" cx="180" cy="80" r="2.5"/><circle class="node" cx="150" cy="112" r="2.5"/><circle class="node" cx="1420" cy="80" r="2.5"/><circle class="node" cx="1450" cy="112" r="2.5"/>
+  <path d="M0 58H110V80H180 M1420 80H1490V58H1600" stroke="url(#topGlow)" fill="none" stroke-width="2"/>
+  <path class="trace-fine" d="M280 0V26H330V42 M430 0V16H468V34 M1320 0V26H1270V42 M1170 0V16H1132V34"/>
+  <circle class="node" cx="330" cy="42" r="2.5"/><circle class="node" cx="468" cy="34" r="2.5"/><circle class="node" cx="1270" cy="42" r="2.5"/><circle class="node" cx="1132" cy="34" r="2.5"/>
+  <!-- Left-side circuit: broad, airy traces centered vertically. -->
+  <g id="left-circuit">
+    <path class="trace" d="M0 188H64V238H126V286H180V350H190 M248 350H258V328H332 M0 302H40V340H88V390H150V442H204 M0 520H72V476H126V520H174V570H230 M0 676H54V632H102V594H160V648H160 M218 648H220V710H270 M0 800H76V756H124V718H178V758H230"/>
+    <path class="trace-fine" d="M0 220H30V260H78 M0 366H22V400H54 M0 564H35V600H80 M0 736H36V704H72 M90 238V270H112 M150 442V470H174 M102 594V560H82 M178 758V786H206"/>
+    <path class="pulse" d="M0 188H64V238H126V286H180V350H232 M0 520H72V476H126V520H174V570H230 M0 800H76V756H124V718H178V758H230"/>
+    <rect class="chip" x="190" y="330" width="58" height="48" rx="5"/><path class="trace-fine" d="M200 341H238M200 350H230M200 359H238M200 368H224"/>
+    <rect class="chip note-circuit-hit" x="160" y="620" width="58" height="42" rx="5" role="button" tabindex="0" aria-label="Ouvrir Note 1" data-note="1"/><path class="note-reminder-icon" data-reminder-note="1" d="M204 625V628L202 631H211L209 628V625Q209 621 206.5 621Q204 621 204 625M205 633Q206.5 635 208 633"/><path class="trace-fine" d="M170 632H208M170 641H200M170 650H208"/>
+    <circle class="node" cx="64" cy="188" r="3"/><circle class="node" cx="126" cy="286" r="3"/><circle class="node" cx="150" cy="442" r="3"/><circle class="node" cx="174" cy="570" r="3"/><circle class="node" cx="178" cy="758" r="3"/>
+    <!-- Animation uniquement sur les trois circuits existants du bas : même géométrie, aucun tracé ajouté. -->
+    <path class="travelling-pulse lower-pulse-1" d="M0 520H72V476H126V520H174V570H230"/>
+    <path class="travelling-pulse lower-pulse-2 pulse-b" d="M0 676H54V632H102V594H160V648H220V710H270"/>
+    <path class="travelling-pulse lower-pulse-3" d="M0 800H76V756H124V718H178V758H230"/>
+  </g>
+  <!-- Open-ended left traces continue to the visible edge of the section panels.
+       They intentionally finish without terminal dots to create a connected-frame effect. -->
+  <g id="left-section-connectors">
+    <path class="trace" d="M248 350H258V328H332 M204 442H246V420H332 M230 570H264V592H332 M270 710H284V690H332 M230 758H256V780H332"/>
+    <path class="trace-fine" d="M258 350V364H282V376H332 M246 442V456H274V468H332 M264 570V556H286V544H332 M284 710V724H296V736H332 M256 758V744H282V732H332"/>
+    <path class="pulse" d="M248 350H258V328H332 M204 442H246V420H332 M230 570H264V592H332 M270 710H284V690H332 M230 758H256V780H332"/>
+  </g>
+  <!-- Right-side circuit mirrors the left for a balanced composition. -->
+  <g id="right-circuit" transform="translate(1600 0) scale(-1 1)">
+    <path class="trace" d="M0 188H64V238H126V286H180V350H190 M248 350H258V328H332 M0 302H40V340H88V390H150V442H204 M0 520H72V476H126V520H174V570H230 M0 676H54V632H102V594H160V648H160 M218 648H220V710H270 M0 800H76V756H124V718H178V758H230"/>
+    <path class="trace-fine" d="M0 220H30V260H78 M0 366H22V400H54 M0 564H35V600H80 M0 736H36V704H72 M90 238V270H112 M150 442V470H174 M102 594V560H82 M178 758V786H206"/>
+    <path class="pulse" d="M0 188H64V238H126V286H180V350H232 M0 520H72V476H126V520H174V570H230 M0 800H76V756H124V718H178V758H230"/>
+    <rect class="chip" x="190" y="330" width="58" height="48" rx="5"/><path class="trace-fine" d="M200 341H238M200 350H230M200 359H238M200 368H224"/>
+    <rect class="chip note-circuit-hit" x="160" y="620" width="58" height="42" rx="5" role="button" tabindex="0" aria-label="Ouvrir Note 2" data-note="2"/><path class="note-reminder-icon" data-reminder-note="2" d="M204 625V628L202 631H211L209 628V625Q209 621 206.5 621Q204 621 204 625M205 633Q206.5 635 208 633"/><path class="trace-fine" d="M170 632H208M170 641H200M170 650H208"/>
+    <circle class="node" cx="64" cy="188" r="3"/><circle class="node" cx="126" cy="286" r="3"/><circle class="node" cx="150" cy="442" r="3"/><circle class="node" cx="174" cy="570" r="3"/><circle class="node" cx="178" cy="758" r="3"/>
+    <!-- Les mêmes trois circuits du bas, animés en miroir, sans nouvelle géométrie. -->
+    <path class="travelling-pulse lower-pulse-1" d="M0 520H72V476H126V520H174V570H230"/>
+    <path class="travelling-pulse lower-pulse-2 pulse-b" d="M0 676H54V632H102V594H160V648H220V710H270"/>
+    <path class="travelling-pulse lower-pulse-3" d="M0 800H76V756H124V718H178V758H230"/>
+  </g>
+  <!-- Mirrored open-ended traces connect to the right edge of the section panels. -->
+  <!-- Connect the five existing left/right circuit endpoints across the bottom area; no new circuit geometry added. -->
+  <path class="trace" d="M332 328H1268 M332 420H1268 M332 592H1268 M332 690H1268 M332 780H1268"/>
+  <path class="trace-fine" d="M332 328H1268 M332 420H1268 M332 592H1268 M332 690H1268 M332 780H1268"/>
+  <g id="right-section-connectors" transform="translate(1600 0) scale(-1 1)">
+    <path class="trace" d="M248 350H258V328H332 M204 442H246V420H332 M230 570H264V592H332 M270 710H284V690H332 M230 758H256V780H332"/>
+    <path class="trace-fine" d="M258 350V364H282V376H332 M246 442V456H274V468H332 M264 570V556H286V544H332 M284 710V724H296V736H332 M256 758V744H282V732H332"/>
+    <path class="pulse" d="M248 350H258V328H332 M204 442H246V420H332 M230 570H264V592H332 M270 710H284V690H332 M230 758H256V780H332"/>
+  </g>
+  <!-- Hardware illustrations: detailed line art, connected to existing circuit endpoints. -->
+  <g id="hardware-light-components" fill="none" stroke="#48baff" stroke-linecap="round" stroke-linejoin="round" opacity=".74" filter="drop-shadow(0 0 4px rgba(38,165,255,.32))">
+    <!-- Actuator magnet + coil assembly: replaces only the left HDD illustration; outer terminals remain aligned to the existing circuit rails. -->
+    <g id="actuator-magnet-coil-light" transform="translate(142 278) scale(.78)">
+      <rect class="hardware-hit-area" x="-28" y="-4" width="222" height="240" fill="transparent" stroke="none" pointer-events="all"/>
+      <!-- Compact metal frame and mounting holes -->
+      <rect x="0" y="0" width="164" height="232" rx="8" stroke-width="2"/>
+      <rect x="7" y="7" width="150" height="218" rx="5" stroke-width=".9" opacity=".5"/>
+      <circle cx="12" cy="13" r="3"/><circle cx="152" cy="13" r="3"/><circle cx="12" cy="219" r="3"/><circle cx="152" cy="219" r="3"/>
+      <!-- Twin magnet blocks -->
+      <path d="M22 42H59Q64 42 64 48V91Q64 97 59 97H22Z" stroke-width="1.8"/>
+      <path d="M105 42H142V97H105Q100 97 100 91V48Q100 42 105 42Z" stroke-width="1.8"/>
+      <path d="M29 50H55V88H29Z M109 50H135V88H109Z" stroke-width="1.1" opacity=".85"/>
+      <path d="M34 57H50M34 65H50M34 73H50M34 81H50M114 57H130M114 65H130M114 73H130M114 81H130" stroke-width="1"/>
+      <!-- Voice coil winding at the center -->
+      <rect x="67" y="34" width="30" height="73" rx="7" stroke-width="2"/>
+      <path d="M72 42H92V49H72V56H92V63H72V70H92V77H72V84H92V91H72V98H92" stroke-width="1.25"/>
+      <rect x="74" y="53" width="16" height="35" rx="3" stroke-width="1.4" opacity=".9"/>
+      <!-- Pivot and actuator arm -->
+      <circle cx="83" cy="153" r="24" stroke-width="2"/><circle cx="83" cy="153" r="15" stroke-width="1.4"/><circle cx="83" cy="153" r="6" stroke-width="1.6"/>
+      <path d="M83 153L114 117Q119 111 126 115L135 121L106 158L93 170Z" stroke-width="2"/>
+      <path d="M94 151L118 122M100 159L126 127" stroke-width="1.1"/>
+      <rect x="126" y="112" width="17" height="22" rx="4" stroke-width="1.6"/>
+      <path d="M130 116L139 130M139 116L130 130" stroke-width="1.1"/>
+      <!-- Fine terminals and technical details -->
+      <path d="M20 119H49M117 184H144M20 194H62M102 194H144M20 25H43M121 25H144" stroke-width="1.1" opacity=".85"/>
+      <circle cx="50" cy="119" r="2.2"/><circle cx="116" cy="184" r="2.2"/>
+      <!-- Existing left and right connection points are preserved exactly -->
+      <path d="M-24 44H0 M164 125H190" stroke-width="2.2"/>
+      <circle cx="-24" cy="44" r="3.2" fill="#55dfff"/><circle cx="190" cy="125" r="3.2" fill="#55dfff"/>
+    </g>
+        <!-- Motherboard: PCB edge, CPU socket, capacitors, RAM slots, PCI slots and I/O. -->
+    <g id="motherboard-light" transform="translate(1272 250) scale(.84)">
+      <rect class="hardware-hit-area" x="-29" y="-4" width="316" height="214" fill="transparent" stroke="none" pointer-events="all"/>
+      <rect x="0" y="0" width="258" height="206" rx="7" stroke-width="2"/>
+      <rect x="6" y="6" width="246" height="194" rx="4" stroke-width=".9" opacity=".5"/>
+      <rect x="83" y="42" width="72" height="72" rx="5" stroke-width="2"/>
+      <rect x="91" y="50" width="56" height="56" rx="3" stroke-width="1.5"/>
+      <rect x="101" y="60" width="36" height="36" rx="2" stroke-width="1"/>
+      <path d="M88 34V25H151V34 M88 122V131H151V122 M75 48H66V108H75 M160 48H169V108H160" stroke-width="1.3"/>
+      <!-- CPU pins -->
+      <path d="M91 39V34M98 39V34M105 39V34M112 39V34M119 39V34M126 39V34M133 39V34M140 39V34M91 117V122M98 117V122M105 117V122M112 117V122M119 117V122M126 117V122M133 117V122M140 117V122" stroke-width="1.3"/>
+      <!-- Memory slots -->
+      <rect x="183" y="22" width="12" height="112" rx="2" stroke-width="1.5"/><rect x="201" y="22" width="12" height="112" rx="2" stroke-width="1.5"/><rect x="219" y="22" width="12" height="112" rx="2" stroke-width="1.5"/>
+      <path d="M188 28V126M206 28V126M224 28V126" stroke-width=".8" opacity=".7"/>
+      <!-- PCIe slots -->
+      <rect x="82" y="151" width="145" height="9" rx="2" stroke-width="1.5"/><rect x="82" y="169" width="125" height="8" rx="2" stroke-width="1.3"/>
+      <path d="M91 155H211M91 173H193" stroke-width=".8" opacity=".7"/>
+      <!-- I/O connectors and capacitors -->
+      <rect x="12" y="24" width="35" height="20" rx="2"/><rect x="12" y="50" width="35" height="20" rx="2"/><rect x="12" y="76" width="35" height="20" rx="2"/><rect x="12" y="102" width="35" height="20" rx="2"/>
+      <circle cx="61" cy="34" r="7"/><circle cx="61" cy="55" r="7"/><circle cx="61" cy="76" r="7"/><circle cx="61" cy="97" r="7"/>
+      <rect x="16" y="145" width="47" height="31" rx="3"/><path d="M23 153H56M23 160H56M23 167H48" stroke-width=".9"/>
+      <path d="M15 188H60V181M70 188H78V142H84M173 147V140H177M238 151H246V184H230" stroke-width="1.1"/>
+      <circle cx="12" cy="12" r="3"/><circle cx="246" cy="12" r="3"/><circle cx="12" cy="194" r="3"/><circle cx="246" cy="194" r="3"/>
+      <!-- Connection pins meet the existing right-side trace network. -->
+      <path d="M-25 72H0 M258 118H282" stroke-width="2.2"/>
+      <circle cx="-25" cy="72" r="3.2" fill="#55dfff"/><circle cx="282" cy="118" r="3.2" fill="#55dfff"/>
+    </g>
+    <!-- RAM module: PCB, five memory packages, contact fingers and mounting holes. -->
+    <g id="ram-light" transform="translate(1120 710) scale(.84)">
+      <rect class="hardware-hit-area" x="-30" y="-4" width="404" height="100" fill="transparent" stroke="none" pointer-events="all"/>
+      <rect x="0" y="0" width="322" height="92" rx="6" stroke-width="2"/>
+      <rect x="7" y="7" width="308" height="76" rx="3" stroke-width=".9" opacity=".55"/>
+      <rect x="24" y="18" width="39" height="42" rx="2" stroke-width="1.5"/><rect x="78" y="18" width="39" height="42" rx="2" stroke-width="1.5"/><rect x="132" y="18" width="39" height="42" rx="2" stroke-width="1.5"/><rect x="186" y="18" width="39" height="42" rx="2" stroke-width="1.5"/><rect x="240" y="18" width="39" height="42" rx="2" stroke-width="1.5"/>
+      <path d="M31 25H56V53H31Z M85 25H110V53H85Z M139 25H164V53H139Z M193 25H218V53H193Z M247 25H272V53H247Z" stroke-width=".8" opacity=".65"/>
+      <path d="M18 68H304M24 64V72M32 64V72M40 64V72M48 64V72M56 64V72M64 64V72M72 64V72M80 64V72M88 64V72M96 64V72M104 64V72M112 64V72M120 64V72M128 64V72M136 64V72M144 64V72M152 64V72M160 64V72M168 64V72M176 64V72M184 64V72M192 64V72M200 64V72M208 64V72M216 64V72M224 64V72M232 64V72M240 64V72M248 64V72M256 64V72M264 64V72M272 64V72M280 64V72M288 64V72M296 64V72" stroke-width=".75"/>
+      <circle cx="12" cy="12" r="3"/><circle cx="310" cy="12" r="3"/>
+      <!-- Trace connection points are physically joined to the module edge. -->
+      <path d="M-26 47H0 M322 47H348V34H370" stroke-width="2.2"/>
+      <circle cx="-26" cy="47" r="3.2" fill="#55dfff"/><circle cx="370" cy="34" r="3.2" fill="#55dfff"/>
+    </g>
+  </g>
+
+  <!-- Removed the two floating upper traces that appeared detached near the page top.
+       The fine edge traces above remain as the clean, connected background decoration. -->
+
+
+</svg>
+
 
 <div class="container">
 
-<h1><a class="title-link" href="https://www.myworkday.com/arrow/d/home" target="_blank" rel="noopener noreferrer" aria-label="Ouvrir Workday Arrow dans un nouvel onglet"><span class="arrow-brand">Arrow Benelux</span> Operations Tool</a></h1>
+<h1><a class="title-link" href="https://www.myworkday.com/arrow/d/home" target="_blank" rel="noopener noreferrer" aria-label="Ouvrir Workday Arrow dans un nouvel onglet"><span class="arrow-brand title-word" data-text="Arrow Benelux">Arrow Benelux</span> <span class="title-word" data-text="Operations Tool">Operations Tool</span></a></h1>
 
 <div id="menu">
 
@@ -896,7 +1212,7 @@ showAll();
 
 <button class="menu-btn" onclick="showSection('sendpo')">
   <span class="menu-title-icon mail-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="3" y="5" width="18" height="14" rx="2.5" stroke="currentColor" stroke-width="1.8"/><path d="M4.5 7L12 13L19.5 7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="menu-label">Send PO</span>
-</button>
+<span class="send-po-light-sweep" aria-hidden="true"></span></button>
 
 <button class="menu-btn" onclick="showSection('chase-delivery')">
   <span class="menu-title-icon package-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 3.5 20 7.5V16.5L12 20.5 4 16.5V7.5L12 3.5Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M4.5 7.7 12 11.5 19.5 7.7M12 11.5V20" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="m9.2 6.2 5.9 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="m14.2 14.8 1.6 1.6 3-3.3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="menu-label">Chase Delivery</span>
@@ -907,10 +1223,10 @@ showAll();
 </button>
 
 <div class="theme-toggle" role="group" aria-label="Basculer entre le mode clair et le mode sombre" title="Cliquer n’importe où pour changer de thème" onclick="toggleThemeSelector()">
-  <button type="button" class="theme-choice" id="lightThemeButton" aria-label="Mode clair" title="Mode clair" aria-pressed="true" >
+  <button type="button" class="theme-choice" id="lightThemeButton" aria-label="Mode clair" title="Mode clair" aria-pressed="false" >
     <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><circle cx="12" cy="12" r="4" stroke="currentColor" stroke-width="1.8"/><path d="M12 2v2M12 20v2M4.93 4.93l1.42 1.42M17.65 17.65l1.42 1.42M2 12h2M20 12h2M4.93 19.07l1.42-1.42M17.65 6.35l1.42-1.42" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
   </button>
-  <button type="button" class="theme-choice" id="darkThemeButton" aria-label="Mode sombre" title="Mode sombre" aria-pressed="false" >
+  <button type="button" class="theme-choice" id="darkThemeButton" aria-label="Mode sombre" title="Mode sombre" aria-pressed="true" >
     <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M20.2 15.1A8.6 8.6 0 0 1 8.9 3.8 8.8 8.8 0 1 0 20.2 15.1Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="m16.5 3 .5 1.5 1.5.5-1.5.5-.5 1.5-.5-1.5-1.5-.5 1.5-.5.5-1.5Z" fill="currentColor"/></svg>
   </button>
 </div>
@@ -923,12 +1239,6 @@ showAll();
   <h2 style="text-align:left;color:#007BFF;">Links - Portals</h2>
 
   <div class="buttons-container" style="display:flex;flex-wrap:wrap;justify-content:center;gap:10px;">
-
-
-
-
-
-
 
 <div class="link-card">
       <a class="po-button" href="https://pan.bitdefender.com/" target="_blank" rel="noopener noreferrer">Bitdefender <span class="mini-flag" aria-label="Belgique" title="Belgique"><svg viewBox="0 0 24 16" aria-hidden="true"><rect width="8" height="16" fill="#111"/><rect x="8" width="8" height="16" fill="#FCD116"/><rect x="16" width="8" height="16" fill="#EF3340"/></svg></span></a>
@@ -1091,13 +1401,6 @@ showAll();
       <a class="po-button" href="https://ibm-services-q2c.lightning.force.com/lightning/page/home" target="_blank" rel="noopener noreferrer">IBM SERV <span class="mini-flag" aria-label="Pays-Bas" title="Pays-Bas"><svg viewBox="0 0 24 16" aria-hidden="true"><rect width="24" height="5.34" fill="#AE1C28"/><rect y="5.33" width="24" height="5.34" fill="#fff"/><rect y="10.66" width="24" height="5.34" fill="#21468B"/></svg></span></a>
     </div>
 
-    
-
-    
-
-    
-
-
     <div class="featured-portals">
       <div class="featured-portals-heading">
         <span class="featured-portals-kicker">QUICK ACCESS</span>
@@ -1107,7 +1410,7 @@ showAll();
       <a class="po-button" href="https://arrow.service-now.com/myconnect" target="_blank" rel="noopener noreferrer">My Connect<span class="link-portal-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="16" y="2" width="6" height="6" rx="1" stroke="currentColor" stroke-width="1.7"/><rect x="2" y="2" width="6" height="6" rx="1" stroke="currentColor" stroke-width="1.7"/><rect x="9" y="16" width="6" height="6" rx="1" stroke="currentColor" stroke-width="1.7"/><path d="M5 8v3a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V8M12 12v4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
     </div>
         <div class="link-card">
-      <a class="po-button" href="https://ecsemeawc.arrow.com/arwquoting/" target="_blank" rel="noopener noreferrer">myWORKspace<span class="mws-mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="3" y="3" width="8" height="5" rx="1" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><rect x="3" y="11" width="8" height="10" rx="1" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><rect x="14" y="3" width="7" height="8" rx="1" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><rect x="14" y="14" width="7" height="7" rx="1" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg></span></a>
+      <a class="po-button" href="https://ecsemeawc.arrow.com/arwquoting/" target="_blank" rel="noopener noreferrer">myWORKspace<span class="mws-mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M9 9V6.5A3.5 3.5 0 1 0 5.5 10H9Zm6 0h2.5A3.5 3.5 0 1 0 14 5.5V9Zm0 6v2.5a3.5 3.5 0 1 0 3.5-3.5H15Zm-6 0H6.5A3.5 3.5 0 1 0 10 18.5V15Z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
     </div>
         <div class="link-card">
       <a class="po-button" href="https://app.medius.com/arrow" target="_blank" rel="noopener noreferrer">Medius<span class="link-portal-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M6 3.5h8l4 4V13" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/><path d="M14 3.5v4h4M6 3.5A2 2 0 0 0 4 5.5v13A2 2 0 0 0 6 20.5h5" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M7.5 10h5M7.5 13h4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><circle cx="16.5" cy="16.5" r="3.2" stroke="currentColor" stroke-width="1.7"/><path d="m19 19 2 2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></span></a>
@@ -1119,8 +1422,6 @@ showAll();
 </div>
 
 </div>
-
-
 
 <!-- Links Section -->
 <div class="section" id="sendpo">
@@ -1187,11 +1488,7 @@ onclick="sendMail('send', 'orders@ctera.com;Anne@ctera.com;katyas@ctera.com',
 Ctera NL
 </a>
 
-</div>
-
-<!-- Cohesity / Flextronics / Druva -->
-<div class="button-group">
-
+<!-- Cohesity / Flextronics -->
 <a class="po-button"
 onclick="sendMail('send', 'orders@cohesity.com;paul.goede@cohesity.com;jan.vleminckx@cohesity.com',
 'Hello%20Team,%0D%0A%0D%0AAttached%20you%20will%20find%20our%20purchase%20order%20with%20reference%20number%20'+getPO('po-send')+'%0D%0A%0D%0ASend%20estimated%20delivery%20dates%20and%20confirmation%20of%20delivery%20to%20belux.licence.ecs.be@arrow.com%0D%0A%0D%0AKind%20regards,')">
@@ -1202,17 +1499,6 @@ Cohesity
 onclick="sendMail('send', 'victoralexander.a@flex.com;mick.creagh@flex.com;ie.crkcohesityordermanagement@flex.com;michelle.casolary@flex.com;mohan.n@flex.com;Fernanda.Rocha@flex.com',
 'Hello%20Team,%0D%0A%0D%0AAttached%20you%20will%20find%20our%20purchase%20order%20with%20reference%20number%20'+getPO('po-send')+'%0D%0A%0D%0AThis%20is%20linked%20with%20purchase%20order%20PO%20'+getPO('po-send')+'%20sent%20to%20Cohesity%20for%20the%20SW%20lines.%0D%0A%0D%0ASend%20estimated%20delivery%20dates%20and%20confirmation%20of%20delivery%20to%20belux.licence.ecs.be@arrow.com%0D%0A%0D%0AKind%20regards,')">
 Flextronics
-</a>
-
-<a class="po-button"
-onclick="sendMail('send', 'thomas.dinsen@druva.com;mathieu.oberic@druva.com;gawaine.chisholm@druva.com;anand.marothi@druva.com;anuska.biswas@druva.com',
-'Hello%20Team,%0D%0A%0D%0AAttached%20you%20will%20find%20our%20purchase%20order%20with%20reference%20number%20'+getPO('po-send')+'%0D%0A%0D%0ASend%20estimated%20delivery%20dates%20and%20confirmation%20of%20delivery%20to%20belux.licence.ecs.be@arrow.com%0D%0A%0D%0AKind%20regards,')">
-Druva Belux</a>
-
-<a class="po-button"
-onclick="sendMail('send', 'thomas.dinsen@druva.com;mathieu.oberic@druva.com;gawaine.chisholm@druva.com;anand.marothi@druva.com;anuska.biswas@druva.com',
-'Hello%20Team,%0D%0A%0D%0AAttached%20you%20will%20find%20our%20purchase%20order%20with%20reference%20number%20'+getPO('po-send')+'%0D%0A%0D%0ASend%20estimated%20delivery%20dates%20and%20confirmation%20of%20delivery%20to%20license.ecs.nl@arrow.com%0D%0A%0D%0AKind%20regards,')">
-Druva NL
 </a>
 
 </div>
@@ -1226,32 +1512,30 @@ Druva NL
   'Hello%20Team,%0D%0A%0D%0AAttached%20you%20will%20find%20our%20purchase%20order%20with%20reference%20number%20'+getPO('po-send')+'%0D%0A%0D%0ASend%20estimated%20delivery%20dates%20and%20confirmation%20of%20delivery%20to%20belux.licence.ecs.be@arrow.com%0D%0A%0D%0AKind%20regards,')">
   Commvault Belux</a>
 
-  <!-- Commvault Belux MTL -->
+  <!-- Commvault NL -->
   <a class="po-button"
   onclick="sendMail('send', 'mboeijen@commvault.com;emeaorderentry@commvault.com;servicecontractsemea@commvault.com;gverheul@commvault.com',
   'Hello%20Team,%0D%0A%0D%0AAttached%20you%20will%20find%20our%20purchase%20order%20with%20reference%20number%20'+getPO('po-send')+'%0D%0A%0D%0ASend%20estimated%20delivery%20dates%20and%20confirmation%20of%20delivery%20to%20license.ecs.nl@arrow.com%0D%0A%0D%0AKind%20regards,')">
   Commvault NL
   </a>
 
-  <!-- Commvault NL -->
-  <a class="po-button"
-  onclick="sendMail('send', 'mboeijen@commvault.com;emeaorderentry@commvault.com;servicecontractsemea@commvault.com;gverheul@commvault.com;orders@metallic.io',
-  'Hello%20Team,%0D%0A%0D%0AAttached%20you%20will%20find%20our%20purchase%20order%20with%20reference%20number%20'+getPO('po-send')+'%0D%0A%0D%0ASend%20estimated%20delivery%20dates%20and%20confirmation%20of%20delivery%20to%20belux.licence.ecs.be@arrow.com%0D%0A%0D%0AKind%20regards,')">
-  Commvault Belux MTL</a>
+  <a class="po-button dark-no-outline"
+onclick="sendMail('send', 'thomas.dinsen@druva.com;mathieu.oberic@druva.com;gawaine.chisholm@druva.com;anand.marothi@druva.com;anuska.biswas@druva.com',
+'Hello%20Team,%0D%0A%0D%0AAttached%20you%20will%20find%20our%20purchase%20order%20with%20reference%20number%20'+getPO('po-send')+'%0D%0A%0D%0ASend%20estimated%20delivery%20dates%20and%20confirmation%20of%20delivery%20to%20belux.licence.ecs.be@arrow.com%0D%0A%0D%0AKind%20regards,')">
+Druva Belux</a>
 
-  <!-- Commvault NL MTL -->
-  <a class="po-button"
-  onclick="sendMail('send', 'mboeijen@commvault.com;emeaorderentry@commvault.com;servicecontractsemea@commvault.com;gverheul@commvault.com;orders@metallic.io',
-  'Hello%20Team,%0D%0A%0D%0AAttached%20you%20will%20find%20our%20purchase%20order%20with%20reference%20number%20'+getPO('po-send')+'%0D%0A%0D%0ASend%20estimated%20delivery%20dates%20and%20confirmation%20of%20delivery%20to%20license.ecs.nl@arrow.com%0D%0A%0D%0AKind%20regards,')">
-  Commvault NL MTL
-  </a>
+  <a class="po-button dark-no-outline"
+onclick="sendMail('send', 'thomas.dinsen@druva.com;mathieu.oberic@druva.com;gawaine.chisholm@druva.com;anand.marothi@druva.com;anuska.biswas@druva.com',
+'Hello%20Team,%0D%0A%0D%0AAttached%20you%20will%20find%20our%20purchase%20order%20with%20reference%20number%20'+getPO('po-send')+'%0D%0A%0D%0ASend%20estimated%20delivery%20dates%20and%20confirmation%20of%20delivery%20to%20license.ecs.nl@arrow.com%0D%0A%0D%0AKind%20regards,')">
+Druva NL
+</a>
 
 </div>
 
 <!-- EnterDB / Equinix / Everfox / F5 -->
 <div class="button-group">
 
-<a class="po-button"
+<a class="po-button dark-no-outline"
 onclick="sendMail('send', 'chris.thorpe@enterprisedb.com;gary.edwards@enterprisedb.com;aret.aprahamian@enterprisedb.com',
 'Hello%20Team,%0D%0A%0D%0AAttached%20you%20will%20find%20our%20purchase%20order%20with%20reference%20number%20'+getPO('po-send')+'%0D%0A%0D%0ASend%20estimated%20delivery%20dates%20and%20confirmation%20of%20delivery%20to%20belux.licence.ecs.be@arrow.com%0D%0A%0D%0AKind%20regards,')">
 EnterDB
@@ -1311,10 +1595,27 @@ Microfocus
 </a>
 
 <a class="po-button"
+onclick="sendMail('send', 'order.ecs.dk@arrow.com;line.helgesen@arrow.com',
+'Hello%20Team,%0D%0A%0D%0AMay%20you%20please%20process%20the%20attached%20order.%0D%0A%0D%0AThank%20you.%0D%0A%0D%0AKind%20regards,%0D%0AYahia')">
+Microsoft
+</a>
+
+<a class="po-button"
 onclick="sendMail('send', 'intercompany.ecs.de@arrow.com;serviceportal.ecs.nl@arrow.com',
 'Hello%20Team,%0D%0A%0D%0AMay%20you%20please%20process%20the%20attached%20storage%20guard%20order.%0D%0A%0D%0AThank%20you.%0D%0A%0D%0AKind%20regards,')">
 NetApp Storage Guard
 </a>
+
+<a class="po-button"
+onclick="sendMail('send', 'alessupportemea@addonnetworks.com;sarah.roberts@addonnetworks.com',
+'Hello%20Team,%0D%0A%0D%0AMay%20you%20please%20process%20the%20attached%20order.%0D%0A%0D%0AThank%20you.%0D%0A%0D%0AKind%20regards,%0D%0AYahia')">
+Prolabs
+</a>
+
+</div>
+
+<!-- Prolion / Scality / Nvidia Renewal -->
+<div class="button-group">
 
 <a class="po-button"
 onclick="sendMail('send', 'POUS@nvidia.com;SalesOps-emeai@nvidia.com',
@@ -1327,11 +1628,6 @@ onclick="sendMail('send', 'POUS@nvidia.com;SalesOps-emeai@nvidia.com',
 Nvidia New Sale NL
 </a>
 
-</div>
-
-<!-- Prolion / Scality / Nvidia Renewal -->
-<div class="button-group">
-
 <a class="po-button"
 onclick="sendMail('send', 'michiel.vanvelzen@prolion.com;global-orders@prolion.com',
 'Hello%20Team,%0D%0A%0D%0AAttached%20you%20will%20find%20our%20purchase%20order%20with%20reference%20number%20'+getPO('po-send')+'%0D%0A%0D%0ASend%20estimated%20delivery%20dates%20and%20confirmation%20of%20delivery%20to%20belux.licence.ecs.be@arrow.com%0D%0A%0D%0AKind%20regards,')">
@@ -1343,12 +1639,6 @@ onclick="sendMail('send', 'michiel.vanvelzen@prolion.com;global-orders@prolion.c
 'Hello%20Team,%0D%0A%0D%0AAttached%20you%20will%20find%20our%20purchase%20order%20with%20reference%20number%20'+getPO('po-send')+'%0D%0A%0D%0ASend%20estimated%20delivery%20dates%20and%20confirmation%20of%20delivery%20to%20license.ecs.nl@arrow.com%0D%0A%0D%0AKind%20regards,')">
 Prolion NL
 </a>
-
-
-
-
-
-
 
 <a class="po-button"
 onclick="sendMail('send', 'renewalsales@nvidia.com;SalesOps-emeai@nvidia.com;POUS@nvidia.com',
@@ -1490,8 +1780,6 @@ onclick="sendMail('send', 'epo@supermicro.com;levig@supermicro.com;TiestS@superm
 Supermicro NL
 </a>
 
-
-
 <a class="po-button"
 onclick="sendMail('send', 'order@scality.com;kevin.hylton@scality.com;daniela.cozma@scality.com',
 'Hello%20Team,%0D%0A%0D%0AAttached%20you%20will%20find%20our%20purchase%20order%20with%20reference%20number%20'+getPO('po-send')+'%0D%0A%0D%0ASend%20estimated%20delivery%20dates%20and%20confirmation%20of%20delivery%20to%20belux.licence.ecs.be@arrow.com%0D%0A%0D%0AKind%20regards,')">
@@ -1528,7 +1816,7 @@ Vast Data
   ">
 
     <!-- Arctera -->
-    <a class="po-button"
+    <a class="po-button chase-light-ring"
     onclick="sendMail('chase', 'bas.strauss@arctera.io;anastasiya.wynne@arctera.io;ordermanagement@arctera.io;customersupport@arctera.io',
     'Hello%20Team,%0A%0AWe%20have%20not%20received%20the%20delivery%20for%20the%20order%20submitted%20with%20PO%20'+getPO('po-chase')+'%0A%0ACould%20you%20please%20give%20us%20an%20update%20on%20this%20%3F%0A%0AKind%20regards,')">
     Arctera
@@ -1542,28 +1830,28 @@ Vast Data
     </a>
 
     <!-- Veritas -->
-    <a class="po-button"
+    <a class="po-button chase-light-ring"
     onclick="sendMail('chase', 'shraddha.kamate2@veritas.com;Sciona.Loughran@veritas.com;marie.baffet@veritas.com',
     'Hello%20Team,%0A%0AWe%20have%20not%20received%20the%20delivery%20for%20the%20order%20submitted%20with%20PO%20'+getPO('po-chase')+'%0A%0ACould%20you%20please%20give%20us%20an%20update%20on%20this%20%3F%0A%0AKind%20regards,')">
     Veritas
     </a>
 
     <!-- CheckPoint -->
-    <a class="po-button"
+    <a class="po-button chase-light-ring"
     onclick="sendMail('chase', 'sas_caseupdates@checkpoint.com;bmol@checkpoint.com',
     'Hello%20Team,%0A%0AWe%20have%20not%20received%20the%20delivery%20for%20the%20order%20submitted%20with%20PO%20'+getPO('po-chase')+'%0A%0ACould%20you%20please%20give%20us%20an%20update%20on%20this%20%3F%0A%0AKind%20regards,')">
     CheckPoint
     </a>
 
     <!-- IBM SERV -->
-    <a class="po-button"
+    <a class="po-button chase-light-ring"
     onclick="sendMail('send', '',
     'Hello%20Team,%0A%0ACould%20you%20please%20advise%20why%20the%20status%20of%20this%20order%20is%20pending%20'+getPO('po-send')+'%0A%0AKind%20regards,')">
     IBM SERV
     </a>
 
     <!-- IBM ESA -->
-    <a class="po-button"
+    <a class="po-button chase-light-ring"
     onclick="sendMail('chase', 'ask.esa.emea@sk.ibm.com',
     'Hello%20Team,%0A%0AWe%20are%20reaching%20out%20to%20follow%20up%20for%20PO%20'+getPO('po-chase')+'%0A%0ACould%20you%20please%20check%20and%20share%20the%20POE%20with%20us%3F%0A%0AKind%20regards,')">
     IBM ESA
@@ -1593,6 +1881,19 @@ Vast Data
 </div>
 
 <style>
+
+/* Keep the shared rotating-light animation for the top menu only; disable it on Chase Delivery vendor buttons. */
+#chase-delivery .po-button.chase-light-ring{
+  position:relative;
+  overflow:hidden;
+}
+#chase-delivery .po-button.chase-light-ring::before,
+#chase-delivery .po-button.chase-light-ring::after{
+  content:none !important;
+  display:none !important;
+  animation:none !important;
+}
+@keyframes chaseLightRing{to{transform:rotate(360deg);}}
 
 /* card layout */
 .link-card{
@@ -1679,58 +1980,120 @@ Vast Data
     /* All flag badges now use the same light-gray outline. */
 
 
-/* Favoris Send PO — effet 3 : Neon bleu électrique */
-#sendpo .po-button.neon-favorite {
-  position: relative;
-  isolation: isolate;
-  border: 1px solid rgba(128, 220, 255, .95) !important;
-  box-shadow: 0 0 0 1px rgba(30, 155, 255, .28),
-              0 0 8px rgba(0, 174, 255, .48),
-              0 0 17px rgba(0, 123, 255, .25),
-              0 3px 6px rgba(0,0,0,.15) !important;
-  animation: arrowNeonPulse 2.6s ease-in-out infinite;
+/* Send PO : assombrir les lettres au survol de TOUS les boutons en mode clair. */
+#sendpo .po-button {
+  transition: color .35s ease, text-shadow .35s ease, transform .25s ease, box-shadow .25s ease !important;
 }
-#sendpo .po-button.neon-favorite:hover {
-  box-shadow: 0 0 0 1px rgba(190, 240, 255, .95),
-              0 0 12px rgba(0, 190, 255, .85),
-              0 0 25px rgba(0, 123, 255, .55),
-              0 8px 18px rgba(0,0,0,.18) !important;
-}
-@keyframes arrowNeonPulse {
-  0%, 100% { box-shadow: 0 0 0 1px rgba(30,155,255,.22), 0 0 6px rgba(0,174,255,.32), 0 0 13px rgba(0,123,255,.18), 0 3px 6px rgba(0,0,0,.15); }
-  50% { box-shadow: 0 0 0 1px rgba(150,225,255,.9), 0 0 12px rgba(0,190,255,.72), 0 0 22px rgba(0,123,255,.4), 0 3px 6px rgba(0,0,0,.15); }
+#sendpo .po-button:hover {
+  color: #17324D !important;
+  text-shadow: 0 0 1px rgba(23,50,77,.20) !important;
 }
 
-/* Reflet lumineux qui fait le tour du cadre — conserve le fond d'origine, notamment en mode dark */
-#sendpo .po-button.border-sweep {
-  position: relative;
-  isolation: isolate;
-  z-index: 0;
+/* Mode clair : pas de contour ; les lettres s'assombrissent doucement au survol. */
+#sendpo .po-button.yellow-outline {
+  border: 1px solid transparent !important;
+  box-shadow: 0 3px 6px rgba(0,0,0,.13) !important;
+  animation: none !important;
+  transition: color .35s ease, text-shadow .35s ease, border-color .35s ease, box-shadow .35s ease !important;
 }
-#sendpo .po-button.border-sweep::before {
-  content: "";
-  position: absolute;
-  inset: -2px;
-  border-radius: inherit;
-  padding: 2px;
-  background: conic-gradient(from 0deg, transparent 0 68%, #D9F7FF 78%, #46CFFF 84%, #FFFFFF 88%, transparent 96% 100%);
-  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
-  -webkit-mask-composite: xor;
-  mask-composite: exclude;
-  pointer-events: none;
-  z-index: 2;
-  animation: arrowBorderSweep 2.4s linear infinite;
+#sendpo .po-button.yellow-outline::before {
+  content: none !important;
+  display: none !important;
 }
-@keyframes arrowBorderSweep { to { transform: rotate(360deg); } }
+#sendpo .po-button.yellow-outline:hover {
+  color: #17324D !important;
+  text-shadow: 0 0 1px rgba(23,50,77,.2) !important;
+  border-color: transparent !important;
+  box-shadow: 0 4px 8px rgba(0,0,0,.16) !important;
+}
+/* Mode sombre : contour or fin, comme l'ancien rendu. */
+.darkmode #sendpo .po-button {
+  background: #59616B !important;
+  background-image: none !important;
+  color: #FFFFFF !important;
+}
+.darkmode #sendpo .po-button:hover {
+  background: #687381 !important;
+  color: #FFFFFF !important;
+  text-shadow: none !important;
+}
+.darkmode #sendpo .po-button.yellow-outline {
+  border: 1px solid #C18B50 !important;
+  box-shadow: 0 0 4px rgba(193,139,80,.25), 0 3px 6px rgba(0,0,0,.13) !important;
+}
+.darkmode #sendpo .po-button.yellow-outline:hover {
+  border-color: #C18B50 !important;
+  box-shadow: 0 0 5px rgba(193,139,80,.32), 0 4px 8px rgba(0,0,0,.16) !important;
+}
+
+
+/* Send PO: force visible horizontal and vertical spacing between every button */
+#sendpo.section{
+  display:grid !important;
+  grid-template-columns:repeat(4,minmax(0,1fr)) !important;
+  column-gap:8px !important;
+  row-gap:8px !important;
+  align-content:start !important;
+}
+#sendpo > .section-header{grid-column:1 / -1 !important;width:100%;box-sizing:border-box;}
+#sendpo > .button-group{display:contents !important;}
+#sendpo > .button-group .po-button{
+  display:flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  text-align:center !important;
+  width:100% !important;
+  min-width:0 !important;
+  max-width:none !important;
+  box-sizing:border-box !important;
+  margin:0 !important;
+}
+@media(max-width:800px){#sendpo.section{grid-template-columns:repeat(2,minmax(0,1fr)) !important;}}
+@media(max-width:480px){#sendpo.section{grid-template-columns:1fr !important;}}
+
+/* FIX: fusion Neon Border + Press & Elevate — quatre boutons du menu uniquement */
+#menu > button.menu-btn:nth-of-type(-n+4) {
+  position: relative !important;
+  transition: transform .22s cubic-bezier(.2,.8,.2,1), box-shadow .22s ease, filter .22s ease !important;
+  box-shadow: 0 3px 7px rgba(20,45,75,.16) !important;
+  outline: 1px solid transparent !important;
+  outline-offset: 0 !important;
+}
+#menu > button.menu-btn:nth-of-type(-n+4):hover {
+  transform: translateY(-2px) !important;
+  box-shadow: 0 7px 16px rgba(0,120,255,.28), 0 0 0 1.5px rgba(75,177,255,.95), 0 0 12px rgba(0,140,255,.30) !important;
+  filter: brightness(1.04) !important;
+}
+#menu > button.menu-btn:nth-of-type(-n+4).active {
+  transform: translateY(-1px) !important;
+  box-shadow: 0 5px 12px rgba(0,120,255,.25), 0 0 0 1.5px rgba(75,177,255,1), 0 0 13px rgba(0,140,255,.30) !important;
+}
+#menu > button.menu-btn:nth-of-type(-n+4):active {
+  transform: translateY(1px) scale(.992) !important;
+  box-shadow: 0 1px 4px rgba(20,45,75,.22), 0 0 0 1.5px rgba(75,177,255,1), 0 0 9px rgba(0,140,255,.25) !important;
+}
 @media (prefers-reduced-motion: reduce) {
-  #sendpo .po-button.neon-favorite { animation: none; }
-  #sendpo .po-button.border-sweep::before { animation: none; }
+  #menu > button.menu-btn:nth-of-type(-n+4) { transition: none !important; }
 }
-
 </style>
 
 <script>
 // Effet temporaire au clic sur « Arrow Benelux », puis retour à la couleur d'origine.
+document.addEventListener('DOMContentLoaded', function () {
+  const lightSweepButtons = [
+    document.querySelector('#menu > button.menu-btn:nth-of-type(2)'),
+    document.querySelector('#menu > button.menu-btn[onclick="showAll()"]')
+  ];
+  lightSweepButtons.forEach(function (button) {
+    if (button && !button.querySelector('.send-po-light-sweep')) {
+      const sweep = document.createElement('span');
+      sweep.className = 'send-po-light-sweep';
+      sweep.setAttribute('aria-hidden', 'true');
+      button.appendChild(sweep);
+    }
+  });
+});
+
 document.addEventListener('DOMContentLoaded', function () {
   const title = document.querySelector('h1');
   if (!title) return;
@@ -1810,29 +2173,722 @@ function sendMail(sectionType, to, body) {
   window.open(url, '_blank');
 }
 
-
-
-// Apply the requested light effects only to selected Send PO buttons.
+// Apply a fixed yellow outline to the requested buttons. No rotating border effects.
 document.addEventListener('DOMContentLoaded', function () {
-  const neonLabels = new Set([
-    'Cloudian Belux', 'Cloudian NL',
-    'Rubrik HW Belux', 'Rubrik HW NL',
-    'Rubrik SW Belux', 'Rubrik SW NL',
-    'Splunk Belux', 'Splunk NL',
-    'Druva Belux', 'Druva NL',
+  const yellowLabels = new Set([
+    'F5',
+    'Rubrik HW NL',
+    'Commvault Belux',
+    'Commvault NL',
+    'Druva Belux',
+    'Druva NL',
     'Scality',
-    'Nvidia Renewal NL',
-    'Nvidia New Sale NL'
-  ]);
-  const sweepLabels = new Set([
+    'EnterDB',
     'Splunk NL',
-    'F5'
+    'Nvidia Renewal NL',
+    'Rubrik SW NL'
   ]);
   document.querySelectorAll('#sendpo .po-button').forEach(function (button) {
     const label = button.textContent.replace(/\s+/g, ' ').trim();
-    if (neonLabels.has(label)) button.classList.add('neon-favorite');
-    if (sweepLabels.has(label)) button.classList.add('border-sweep');
+    button.classList.remove('neon-favorite', 'border-sweep');
+    if (yellowLabels.has(label)) button.classList.add('yellow-outline');
   });
 });
 
 </script>
+
+
+<style id="restored-blue-cursor-spotlight">
+/* Cursor Spotlight — isolated decorative layer; does not intercept clicks */
+#cursor-spotlight {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background: radial-gradient(
+    170px circle at var(--spotlight-x, 50vw) var(--spotlight-y, 50vh),
+    rgba(0, 123, 255, 0.16) 0%,
+    rgba(0, 123, 255, 0.07) 38%,
+    rgba(0, 123, 255, 0) 72%
+  );
+}
+body > .container {
+  position: relative;
+  z-index: 1;
+}
+@media (hover: none), (pointer: coarse), (prefers-reduced-motion: reduce) {
+  #cursor-spotlight { display: none !important; }
+}
+
+
+</style>
+<script>
+(function () {
+  function initSpotlight() {
+    const spotlight = document.getElementById('cursor-spotlight');
+    if (!spotlight ||
+        !window.matchMedia('(hover: hover) and (pointer: fine)').matches ||
+        window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+    let x = window.innerWidth / 2;
+    let y = window.innerHeight / 2;
+    let targetX = x;
+    let targetY = y;
+
+    window.addEventListener('pointermove', function (event) {
+      targetX = event.clientX;
+      targetY = event.clientY;
+    }, { passive: true });
+
+    function animate() {
+      x += (targetX - x) * 0.16;
+      y += (targetY - y) * 0.16;
+      spotlight.style.setProperty('--spotlight-x', x + 'px');
+      spotlight.style.setProperty('--spotlight-y', y + 'px');
+      window.requestAnimationFrame(animate);
+    }
+    window.requestAnimationFrame(animate);
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initSpotlight, { once: true });
+  } else {
+    initSpotlight();
+  }
+})();
+
+</script>
+
+<style id="po-background-components-status">
+/* État des circuits : vert si exactement 12 caractères sont renseignés, rouge sinon. */
+#circuit-backdrop,
+#circuit-backdrop * {
+  transition: stroke .35s ease, fill .35s ease, opacity .35s ease, filter .35s ease;
+}
+#circuit-backdrop.po-valid {
+  animation: poCircuitValidPulse 2.2s ease-in-out infinite;
+}
+#circuit-backdrop.po-invalid {
+  animation: poCircuitInvalidPulse 2.2s ease-in-out infinite;
+}
+#circuit-backdrop.po-valid .trace,
+#circuit-backdrop.po-valid .trace-fine,
+#circuit-backdrop.po-valid .pulse,
+#circuit-backdrop.po-valid .top-line-a,
+#circuit-backdrop.po-valid .top-line-b,
+#circuit-backdrop.po-valid .travelling-pulse,
+#circuit-backdrop.po-valid #hardware-light-components,
+#circuit-backdrop.po-valid #hardware-light-components * {
+  stroke: #35e879 !important;
+  filter: drop-shadow(0 0 2px rgba(53,232,121,.52));
+}
+#circuit-backdrop.po-valid .node,
+#circuit-backdrop.po-valid #hardware-light-components circle[fill],
+#circuit-backdrop.po-valid .chip {
+  fill: #35e879 !important;
+}
+#circuit-backdrop.po-invalid .trace,
+#circuit-backdrop.po-invalid .trace-fine,
+#circuit-backdrop.po-invalid .pulse,
+#circuit-backdrop.po-invalid .top-line-a,
+#circuit-backdrop.po-invalid .top-line-b,
+#circuit-backdrop.po-invalid .travelling-pulse,
+#circuit-backdrop.po-invalid #hardware-light-components,
+#circuit-backdrop.po-invalid #hardware-light-components * {
+  stroke: #ff4d5e !important;
+  filter: drop-shadow(0 0 2px rgba(255,77,94,.5));
+}
+#circuit-backdrop.po-invalid .node,
+#circuit-backdrop.po-invalid #hardware-light-components circle[fill],
+#circuit-backdrop.po-invalid .chip {
+  fill: #ff4d5e !important;
+}
+@keyframes poCircuitValidPulse {
+  0%,100% { opacity: .78; filter: drop-shadow(0 0 2px rgba(53,232,121,.22)); }
+  50% { opacity: 1; filter: drop-shadow(0 0 6px rgba(53,232,121,.62)); }
+}
+@keyframes poCircuitInvalidPulse {
+  0%,100% { opacity: .78; filter: drop-shadow(0 0 2px rgba(255,77,94,.18)); }
+  50% { opacity: 1; filter: drop-shadow(0 0 6px rgba(255,77,94,.58)); }
+}
+@media (prefers-reduced-motion: reduce) {
+  #circuit-backdrop.po-valid,
+  #circuit-backdrop.po-invalid { animation: none; }
+  #circuit-backdrop, #circuit-backdrop * { transition: none; }
+}
+</style>
+<script id="po-background-components-status-script">
+(function () {
+  let previousStatus = 'empty';
+  let audioContext = null;
+
+  function getAudioContext() {
+    const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+    if (!AudioContextClass) return null;
+    if (!audioContext) audioContext = new AudioContextClass();
+    if (audioContext.state === 'suspended') audioContext.resume();
+    return audioContext;
+  }
+
+  // « Erreur système » : deux notes graves, effet erreur rétro.
+  function playSystemErrorSound() {
+    try {
+      const ctx = getAudioContext();
+      if (!ctx) return;
+      const startAt = ctx.currentTime + 0.02;
+      [0, 0.19].forEach(function (offset, index) {
+        const oscillator = ctx.createOscillator();
+        const gain = ctx.createGain();
+        oscillator.type = 'square';
+        oscillator.frequency.setValueAtTime(index === 0 ? 220 : 164.81, startAt + offset);
+        gain.gain.setValueAtTime(0.0001, startAt + offset);
+        gain.gain.exponentialRampToValueAtTime(0.0286875, startAt + offset + 0.012);
+        gain.gain.setValueAtTime(0.0286875, startAt + offset + 0.11);
+        gain.gain.exponentialRampToValueAtTime(0.0001, startAt + offset + 0.14);
+        oscillator.connect(gain);
+        gain.connect(ctx.destination);
+        oscillator.start(startAt + offset);
+        oscillator.stop(startAt + offset + 0.15);
+      });
+    } catch (e) {}
+  }
+
+  // « Confirmation » : petit carillon électronique pour valider une action.
+  function playConfirmationSound() {
+    try {
+      const ctx = getAudioContext();
+      if (!ctx) return;
+      const startAt = ctx.currentTime + 0.02;
+      // Deux notes douces et cristallines, façon carillon électronique.
+      [659.25, 987.77].forEach(function (frequency, index) {
+        const offset = index * 0.095;
+        const oscillator = ctx.createOscillator();
+        const gain = ctx.createGain();
+        oscillator.type = 'sine';
+        oscillator.frequency.setValueAtTime(frequency, startAt + offset);
+        gain.gain.setValueAtTime(0.0001, startAt + offset);
+        gain.gain.exponentialRampToValueAtTime(0.0364, startAt + offset + 0.012);
+        gain.gain.exponentialRampToValueAtTime(0.0001, startAt + offset + 0.24);
+        oscillator.connect(gain);
+        gain.connect(ctx.destination);
+        oscillator.start(startAt + offset);
+        oscillator.stop(startAt + offset + 0.25);
+      });
+    } catch (e) {}
+  }
+
+  // « Scan de données » : montée de bips, style ordinateur des années 90.
+  function playDataScanSound() {
+    try {
+      const ctx = getAudioContext();
+      if (!ctx) return;
+      const startAt = ctx.currentTime + 0.02;
+      [440, 554.37, 659.25, 783.99, 987.77].forEach(function (frequency, index) {
+        const offset = index * 0.075;
+        const oscillator = ctx.createOscillator();
+        const gain = ctx.createGain();
+        oscillator.type = 'square';
+        oscillator.frequency.setValueAtTime(frequency, startAt + offset);
+        gain.gain.setValueAtTime(0.0001, startAt + offset);
+        gain.gain.exponentialRampToValueAtTime(0.055, startAt + offset + 0.008);
+        gain.gain.exponentialRampToValueAtTime(0.0001, startAt + offset + 0.065);
+        oscillator.connect(gain);
+        gain.connect(ctx.destination);
+        oscillator.start(startAt + offset);
+        oscillator.stop(startAt + offset + 0.07);
+      });
+    } catch (e) {}
+  }
+
+  function updateBackgroundStatus() {
+    const backdrop = document.getElementById('circuit-backdrop');
+    const sendPO = document.getElementById('po-send');
+    const chasePO = document.getElementById('po-chase');
+    if (!backdrop) return;
+
+    const values = [sendPO, chasePO].filter(Boolean).map(field => field.value.trim());
+    const enteredPOs = values.filter(value => value.length > 0);
+    const value = enteredPOs.length ? enteredPOs[enteredPOs.length - 1] : '';
+    const isValid = value.length === 12;
+    const currentStatus = !value ? 'empty' : (isValid ? 'valid' : 'invalid');
+
+    backdrop.classList.toggle('po-valid', currentStatus === 'valid');
+    backdrop.classList.toggle('po-invalid', currentStatus === 'invalid');
+    if (currentStatus === 'empty') {
+      backdrop.classList.remove('po-valid', 'po-invalid');
+    }
+
+    if (currentStatus === 'invalid' && previousStatus !== 'invalid') {
+      playSystemErrorSound();
+    }
+    previousStatus = currentStatus;
+  }
+
+  document.addEventListener('DOMContentLoaded', function () {
+    ['po-send', 'po-chase'].forEach(function (id) {
+      const field = document.getElementById(id);
+      if (field) {
+        field.addEventListener('input', updateBackgroundStatus);
+        field.addEventListener('change', updateBackgroundStatus);
+      }
+    });
+    updateBackgroundStatus();
+  });
+})();
+</script>
+
+
+<style id="circuit-notes-style">
+#circuit-backdrop .note-circuit-hit{cursor:pointer;pointer-events:all;}
+#circuit-backdrop .note-circuit-hit:hover,#circuit-backdrop .note-circuit-hit:focus-visible{stroke:#27aaff;stroke-width:2;filter:drop-shadow(0 0 5px rgba(0,145,255,.8));outline:none;}
+#circuit-note-modal,.circuit-note-modal{position:fixed;z-index:9999;display:none;width:min(300px,calc(100vw - 28px));padding:0;background:transparent;filter:drop-shadow(0 9px 12px rgba(0,0,0,.2));}
+#circuit-note-modal.is-open,.circuit-note-modal.is-open{display:block;animation:notePopupIn .18s ease-out both;}
+#circuit-note-card,.circuit-note-card{position:relative;box-sizing:border-box;background:#d9dee4;border:0;border-radius:2px 2px 3px 3px;padding:22px 17px 15px;color:#263445;font-family:inherit;box-shadow:0 2px 3px rgba(0,0,0,.08),0 10px 24px rgba(20,35,45,.18);transform:rotate(-.6deg);transition:background .15s ease,color .15s ease;}
+#circuit-note-card.note-two,.circuit-note-card.note-two{background:#d9dee4;color:#263445;}
+#circuit-note-card.note-two,.circuit-note-card.note-two:before{background:rgba(81,174,255,.38);border-color:rgba(35,139,237,.35);}
+#circuit-note-card.note-two,.circuit-note-card.note-two:after{border-top-color:#cbd3dc;}
+#circuit-note-card.note-two,.circuit-note-card.note-two #circuit-note-heading,.circuit-note-heading{color:#263445;}
+#circuit-note-card.note-two,.circuit-note-card.note-two #circuit-note-text,.circuit-note-text{background:repeating-linear-gradient(to bottom,#d9dee4 0,#d9dee4 25px,rgba(76,94,116,.2) 26px,#d9dee4 27px);border-top-color:rgba(48,65,85,.18);color:#263445;}
+#circuit-note-card.note-two,.circuit-note-card.note-two #circuit-note-text::placeholder,.circuit-note-text::placeholder{color:#687789;}
+#circuit-note-card.note-two,.circuit-note-card.note-two .note-reminder-icon{stroke:#168cff;}
+#circuit-note-card:before{content:"";position:absolute;top:-7px;left:calc(50% - 37px);width:74px;height:17px;background:rgba(81,174,255,.38);border:1px solid rgba(35,139,237,.35);box-shadow:0 1px 3px rgba(0,0,0,.08);transform:rotate(-1.5deg);}
+#circuit-note-card:after{content:"";position:absolute;right:0;top:0;width:0;height:0;border-top:22px solid #cbd3dc;border-left:22px solid transparent;}
+#circuit-note-heading,.circuit-note-heading{font-size:14px;font-weight:700;margin:0 0 12px;padding-right:68px;letter-spacing:.1px;color:#263445;}
+#circuit-note-pin,.circuit-note-pin{position:absolute;z-index:2;top:5px;right:25px;width:36px;height:36px;display:flex;align-items:center;justify-content:center;border:1px solid rgba(0,145,255,.32);border-radius:6px;padding:3px;background:rgba(255,255,255,.72);color:#00A3FF;cursor:pointer;}
+#circuit-note-pin svg,.circuit-note-pin svg{width:27px;height:27px;display:block;stroke:currentColor;stroke-width:2.5;filter:drop-shadow(0 0 3px rgba(0,163,255,.38));}
+#circuit-note-pin.is-pinned,.circuit-note-pin.is-pinned{background:rgba(0,145,255,.15);border-color:#008cff;color:#008cff;box-shadow:0 0 8px rgba(0,145,255,.25);}
+#circuit-note-text,.circuit-note-text{display:block;width:100%;min-height:130px;resize:vertical;box-sizing:border-box;border:0;border-top:1px solid rgba(48,65,85,.18);border-radius:0;background:repeating-linear-gradient(to bottom,#d9dee4 0,#d9dee4 25px,rgba(76,94,116,.2) 26px,#d9dee4 27px);color:#263445;padding:8px 3px;font:inherit;line-height:27px;outline:none;}
+#circuit-note-text::placeholder,.circuit-note-text::placeholder{color:#687789;opacity:1;}
+#circuit-backdrop .note-reminder-icon{display:none;fill:none;stroke:#168cff;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round;pointer-events:none;}
+#circuit-backdrop .note-reminder-icon.is-visible{display:block;}
+#circuit-note-text:focus,.circuit-note-text:focus{box-shadow:none;}
+.circuit-note-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:12px;}
+.circuit-note-actions button{border:1px solid rgba(105,91,35,.28);border-radius:4px;padding:7px 11px;background:rgba(255,255,255,.48);color:#4b462f;font:inherit;font-size:12px;cursor:pointer;}
+.circuit-note-actions button.primary{background:#2f8ee5;border-color:#247bca;color:white;}
+.circuit-note-actions button:hover{filter:brightness(.97);}
+@keyframes notePopupIn{from{opacity:0;transform:translateY(5px) scale(.985)}to{opacity:1;transform:translateY(0) scale(1)}}
+@media(prefers-reduced-motion:reduce){#circuit-note-modal.is-open,.circuit-note-modal.is-open{animation:none}}
+
+/* Option 1: impulsion électrique brève — le circuit s'illumine puis le cadre s'éteint. */
+#circuit-backdrop #actuator-magnet-coil-light,
+#circuit-backdrop #motherboard-light,
+#circuit-backdrop #ram-light{cursor:pointer;transform-box:fill-box;pointer-events:all;opacity:1;outline:none;}
+#circuit-backdrop .hardware-hit-area{fill:transparent;stroke:none;pointer-events:all;cursor:pointer;}
+#circuit-backdrop #actuator-magnet-coil-light.halo-active,
+#circuit-backdrop #motherboard-light.halo-active,
+#circuit-backdrop #ram-light.halo-active{animation:hardwareElectricImpulse .82s ease-out both !important;}
+@keyframes hardwareElectricImpulse{
+  0%{filter:drop-shadow(0 0 0 rgba(0,145,255,0));}
+  16%{filter:drop-shadow(0 0 2px rgba(0,145,255,.95)) drop-shadow(0 0 6px rgba(54,186,255,.85));}
+  32%{filter:drop-shadow(0 0 5px rgba(0,145,255,1)) drop-shadow(0 0 13px rgba(54,186,255,1)) drop-shadow(0 0 21px rgba(0,145,255,.78)) brightness(1.22);}
+  48%{filter:drop-shadow(0 0 2px rgba(0,145,255,.9)) drop-shadow(0 0 7px rgba(54,186,255,.68)) brightness(1.08);}
+  100%{filter:drop-shadow(0 0 0 rgba(0,145,255,0)) brightness(1);}
+}
+@media(prefers-reduced-motion:reduce){#circuit-backdrop #actuator-magnet-coil-light.halo-active,#circuit-backdrop #motherboard-light.halo-active,#circuit-backdrop #ram-light.halo-active{animation:none !important}}
+
+</style>
+<div id="circuit-note-modal-1" class="circuit-note-modal" role="dialog" aria-modal="false" aria-labelledby="circuit-note-heading-1">
+  <div class="circuit-note-card" id="circuit-note-card-1">
+    <button type="button" class="circuit-note-pin" id="circuit-note-pin-1" aria-label="Conserver la note ouverte" aria-pressed="false" title="Conserver la note ouverte"><svg viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3.75h12a1.25 1.25 0 0 1 1.25 1.25v16L12 16.2l-7.25 4.8V5A1.25 1.25 0 0 1 6 3.75Z"/></svg></button>
+    <h2 class="circuit-note-heading" id="circuit-note-heading-1">Note 1</h2>
+    <textarea class="circuit-note-text" id="circuit-note-text-1" placeholder="..."></textarea>
+  </div>
+</div>
+<div id="circuit-note-modal-2" class="circuit-note-modal" role="dialog" aria-modal="false" aria-labelledby="circuit-note-heading-2">
+  <div class="circuit-note-card note-two" id="circuit-note-card-2">
+    <button type="button" class="circuit-note-pin" id="circuit-note-pin-2" aria-label="Conserver la note ouverte" aria-pressed="false" title="Conserver la note ouverte"><svg viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3.75h12a1.25 1.25 0 0 1 1.25 1.25v16L12 16.2l-7.25 4.8V5A1.25 1.25 0 0 1 6 3.75Z"/></svg></button>
+    <h2 class="circuit-note-heading" id="circuit-note-heading-2">Note 2</h2>
+    <textarea class="circuit-note-text" id="circuit-note-text-2" placeholder="..."></textarea>
+  </div>
+</div>
+<script id="circuit-notes-script">
+(function(){
+  const notes={};
+  ['1','2'].forEach(function(id){
+    const modal=document.getElementById('circuit-note-modal-'+id);
+    const card=document.getElementById('circuit-note-card-'+id);
+    const heading=document.getElementById('circuit-note-heading-'+id);
+    const textarea=document.getElementById('circuit-note-text-'+id);
+    const pinButton=document.getElementById('circuit-note-pin-'+id);
+    if(!modal||!card||!heading||!textarea||!pinButton)return;
+    const state={id,modal,card,heading,textarea,pinButton,isPinned:false}; notes[id]=state;
+    // Full-width top and bottom resize zones: drag either edge to change the note window height.
+    ['top','bottom'].forEach(function(edge){
+      const handle=document.createElement('div');
+      handle.className='note-resize-edge note-resize-'+edge;
+      handle.setAttribute('aria-hidden','true');
+      modal.appendChild(handle);
+      handle.addEventListener('pointerdown',function(event){
+        if(event.button!==0)return;
+        event.preventDefault();event.stopPropagation();
+        const startY=event.clientY, startHeight=modal.getBoundingClientRect().height;
+        const startTop=modal.getBoundingClientRect().top;
+        handle.setPointerCapture(event.pointerId);
+        function move(e){
+          const delta=e.clientY-startY;
+          const height=Math.max(190,Math.min(window.innerHeight-28,startHeight+(edge==='bottom'?delta:-delta)));
+          modal.style.height=height+'px';
+          textarea.style.height=Math.max(130,height-card.querySelector('.circuit-note-heading').offsetHeight-65)+'px';
+          if(edge==='top')modal.style.top=Math.max(14,Math.min(window.innerHeight-height-14,startTop+(startHeight-height)))+'px';
+        }
+        function end(){handle.removeEventListener('pointermove',move);handle.removeEventListener('pointerup',end);handle.removeEventListener('pointercancel',end);}
+        handle.addEventListener('pointermove',move);handle.addEventListener('pointerup',end);handle.addEventListener('pointercancel',end);
+      });
+    });
+    function updatePinButton(){
+      pinButton.classList.toggle('is-pinned',state.isPinned);
+      pinButton.setAttribute('aria-pressed',String(state.isPinned));
+      pinButton.setAttribute('aria-label',state.isPinned?'Note conservée ouverte':'Conserver la note ouverte');
+      pinButton.title=state.isPinned?'Note conservée ouverte':'Conserver la note ouverte';
+    }
+    state.updatePinButton=updatePinButton;
+    pinButton.addEventListener('click',function(event){event.preventDefault();event.stopPropagation();state.isPinned=!state.isPinned;updatePinButton();});
+    const storageKey='arrowBeneluxCircuitNote'+id;
+    try{textarea.value=localStorage.getItem(storageKey)||'';}catch(e){}
+    textarea.addEventListener('input',function(){
+      try{localStorage.setItem(storageKey,textarea.value);}catch(e){}
+      updateReminderIcons();
+    });
+  });
+  function updateReminderIcons(){
+    ['1','2'].forEach(function(id){
+      let value='';try{value=localStorage.getItem('arrowBeneluxCircuitNote'+id)||'';}catch(e){}
+      const icon=document.querySelector('#circuit-backdrop .note-reminder-icon[data-reminder-note="'+id+'"]');
+      if(icon)icon.classList.toggle('is-visible',value.trim().length>0);
+    });
+  }
+  updateReminderIcons();
+  // The halo is triggered independently on each of the three existing hardware illustrations.
+  ['actuator-magnet-coil-light','motherboard-light','ram-light'].forEach(function(id){
+    const component=document.getElementById(id); if(!component)return;
+    component.style.pointerEvents='visiblePainted'; component.style.outline='none';
+    function triggerHalo(event){if(event){event.preventDefault();event.stopPropagation();}component.classList.remove('halo-active');void component.getBoundingClientRect().width;component.classList.add('halo-active');window.setTimeout(function(){component.classList.remove('halo-active');},850);}
+    component.addEventListener('click',triggerHalo);
+  });
+  function openNote(id,target){
+    const state=notes[id]; if(!state)return;
+    const {modal,textarea}=state; const margin=14,rect=target.getBoundingClientRect();
+    try{textarea.value=localStorage.getItem('arrowBeneluxCircuitNote'+id)||'';}catch(e){}
+    modal.style.left='0px';modal.style.top='0px';modal.classList.add('is-open');
+    const width=modal.offsetWidth,height=modal.offsetHeight;
+    const left=id==='1'?margin:Math.max(margin,window.innerWidth-width-margin);
+    let top=rect.top+(rect.height-height)/2;top=Math.max(margin,Math.min(top,window.innerHeight-height-margin));
+    modal.style.left=left+'px';modal.style.top=top+'px';textarea.focus({preventScroll:true});
+  }
+  function closeNote(state){state.modal.classList.remove('is-open');state.isPinned=false;state.updatePinButton();}
+  document.querySelectorAll('#circuit-backdrop .note-circuit-hit').forEach(function(target){
+    const id=target.dataset.note||'1';target.setAttribute('aria-label','Ouvrir Note '+id);
+    target.addEventListener('click',function(event){event.preventDefault();event.stopPropagation();openNote(id,target);});
+    target.addEventListener('keydown',function(event){if(event.key==='Enter'||event.key===' '){event.preventDefault();target.dispatchEvent(new MouseEvent('click',{bubbles:true,cancelable:true}));}});
+  });
+  document.addEventListener('click',function(event){Object.values(notes).forEach(function(state){if(state.modal.classList.contains('is-open')&&!state.isPinned&&!state.modal.contains(event.target)&&!event.target.closest('.note-circuit-hit'))closeNote(state);});});
+  document.addEventListener('keydown',function(event){if(event.key==='Escape')Object.values(notes).forEach(function(state){if(state.modal.classList.contains('is-open'))closeNote(state);});});
+  window.addEventListener('resize',function(){Object.values(notes).forEach(function(state){if(state.modal.classList.contains('is-open')){const margin=14;const left=state.id==='1'?margin:Math.max(margin,window.innerWidth-state.modal.offsetWidth-margin);state.modal.style.left=left+'px';state.modal.style.top=Math.max(margin,Math.min(parseFloat(state.modal.style.top)||margin,window.innerHeight-state.modal.offsetHeight-margin))+'px';}});});
+})();
+</script>
+
+
+<style id="note-textarea-light-fix">
+/* Keep both sticky-note writing areas light even when the main dashboard is in dark mode. */
+.darkmode #circuit-note-text-1,
+.darkmode #circuit-note-text-2,
+.darkmode .circuit-note-text {
+  background: repeating-linear-gradient(to bottom, #d9dee4 0, #d9dee4 25px, rgba(76,94,116,.2) 26px, #d9dee4 27px) !important;
+  color: #263445 !important;
+  border: 0 !important;
+  border-top: 1px solid rgba(48,65,85,.18) !important;
+}
+.darkmode #circuit-note-text-1::placeholder,
+.darkmode #circuit-note-text-2::placeholder,
+.darkmode .circuit-note-text::placeholder { color: #687789 !important; opacity: 1 !important; }
+</style>
+
+
+<style id="note-full-edge-resize-fix">
+.circuit-note-modal{overflow:visible;}
+.note-resize-edge{position:absolute;left:0;right:0;height:12px;z-index:10;cursor:ns-resize;touch-action:none;background:transparent;}
+.note-resize-top{top:0;}
+.note-resize-bottom{bottom:0;}
+.note-resize-edge:hover{background:rgba(0,163,255,.13);}
+.circuit-note-modal[style*="height"] .circuit-note-card{height:100%;}
+.circuit-note-modal[style*="height"] .circuit-note-text{height:calc(100% - 40px);}
+</style>
+
+<style id="final-druva-enterdb-dark-no-border">
+/* Only these three requested buttons: no outline, border or shadow in dark mode. */
+.darkmode #sendpo .po-button.dark-no-outline,
+.darkmode #sendpo .po-button.dark-no-outline:hover,
+.darkmode #sendpo .po-button.dark-no-outline:focus,
+.darkmode #sendpo .po-button.dark-no-outline:focus-visible,
+.darkmode #sendpo .po-button.dark-no-outline:active {
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+}
+</style>
+
+
+<style id="light-saas-premium-section-buttons">
+/* Light SaaS Premium: soft grey supplier buttons in light mode only.
+   Dark mode, layout, dimensions, circuits and functionality are unchanged. */
+body:not(.darkmode) #links .po-button,
+body:not(.darkmode) #sendpo .po-button,
+body:not(.darkmode) #chase-delivery .po-button {
+  background-color: #E9EEF4 !important;
+  background-image: none !important;
+  color: #34465B !important;
+  border-color: transparent !important;
+  outline: none !important;
+  box-shadow: 0 1px 3px rgba(31, 55, 82, .07) !important;
+  text-shadow: none !important;
+}
+body:not(.darkmode) #links .po-button:hover,
+body:not(.darkmode) #sendpo .po-button:hover,
+body:not(.darkmode) #chase-delivery .po-button:hover,
+body:not(.darkmode) #links .po-button:focus-visible,
+body:not(.darkmode) #sendpo .po-button:focus-visible,
+body:not(.darkmode) #chase-delivery .po-button:focus-visible {
+  background-color: #E1EDFA !important;
+  color: #607D96 !important;
+  border-color: transparent !important;
+  outline: none !important;
+  box-shadow: 0 3px 8px rgba(61, 112, 164, .12) !important;
+}
+body:not(.darkmode) #links .po-button:active,
+body:not(.darkmode) #sendpo .po-button:active,
+body:not(.darkmode) #chase-delivery .po-button:active {
+  background-color: #D6E6F7 !important;
+  border-color: transparent !important;
+  box-shadow: inset 0 1px 2px rgba(56, 96, 145, .08) !important;
+}
+</style>
+
+
+<style id="unify-all-section-buttons-to-sendpo">
+/* Match every supplier/action button in Links, Send PO and Chase Delivery to Send PO's soft grey in light mode. */
+body:not(.darkmode) #links .po-button,
+body:not(.darkmode) #links .buttons-container button,
+body:not(.darkmode) #links .link-card .po-button,
+body:not(.darkmode) #sendpo .po-button,
+body:not(.darkmode) #sendpo .button-group .po-button,
+body:not(.darkmode) #chase-delivery .po-button,
+body:not(.darkmode) #chase-delivery .buttons-container .po-button {
+  background: #E9EEF4 !important;
+  background-image: none !important;
+  color: #34465B !important;
+  border: 1px solid transparent !important;
+  outline: none !important;
+  box-shadow: 0 1px 3px rgba(31,55,82,.07) !important;
+  text-shadow: none !important;
+}
+body:not(.darkmode) #links .po-button:hover,
+body:not(.darkmode) #sendpo .po-button:hover,
+body:not(.darkmode) #chase-delivery .po-button:hover {
+  background: #E1EDFA !important;
+  background-image: none !important;
+  color: #607D96 !important;
+  border-color: transparent !important;
+  box-shadow: 0 3px 8px rgba(61,112,164,.12) !important;
+}
+body:not(.darkmode) #links .po-button:active,
+body:not(.darkmode) #sendpo .po-button:active,
+body:not(.darkmode) #chase-delivery .po-button:active {
+  background: #D6E6F7 !important;
+  background-image: none !important;
+  border-color: transparent !important;
+  box-shadow: inset 0 1px 2px rgba(56,96,145,.08) !important;
+}
+</style>
+
+
+<style id="light-mode-three-sections-darker-background">
+/* Slightly darker soft-grey panels in light mode only; preserve dark mode. */
+body:not(.darkmode) #links.section,
+body:not(.darkmode) #sendpo.section,
+body:not(.darkmode) #chase-delivery.section {
+  background: #DCD8D0 !important;
+}
+</style>
+
+
+<style id="effect-08-glow-theme-toggle">
+/* EFFET 08 — Glow discret bleu uniquement sur le cadre soleil/lune */
+.theme-toggle{
+  transition: box-shadow .22s ease, border-color .22s ease;
+}
+.theme-toggle:hover{
+  border-color:rgba(65,160,255,.55);
+  box-shadow:0 0 7px rgba(0,132,255,.20), 0 0 14px rgba(0,132,255,.12);
+}
+.theme-toggle:active{
+  box-shadow:0 0 8px rgba(65,160,255,.30), 0 0 16px rgba(0,132,255,.16);
+}
+@media(prefers-reduced-motion:reduce){.theme-toggle{transition:none!important;}}
+</style>
+
+
+
+<style id="light-mode-menu-hover-text-color-only">
+/* Mode clair : copier uniquement la couleur du texte au survol des boutons de section.
+   Le fond gris de base reste identique ; aucun autre style n'est modifié. */
+body:not(.darkmode) #menu > button.menu-btn:nth-of-type(-n+4):hover,
+body:not(.darkmode) #menu > button.menu-btn:nth-of-type(-n+4):focus-visible {
+  color: #607D96 !important;
+  background: #D2D1D0 !important;
+  background-image: none !important;
+}
+</style>
+
+<style id="myworkspace-command-icon-light-color">
+/* MyWorkspace : icône Command, gris bleu en mode clair ; couleur du mode sombre conservée. */
+body:not(.darkmode) #links .mws-mark { color: #607D96 !important; }
+body.darkmode #links .mws-mark { color: #fff; }
+</style>
+
+</body>
+
+<style id="section-background-transparency-final-corrected">
+/* Light mode: 80% transparent (20% opaque). Dark mode: 40% transparent (60% opaque). */
+body:not(.darkmode) #links.section,
+body:not(.darkmode) #sendpo.section,
+body:not(.darkmode) #chase-delivery.section {
+  background: rgba(251, 249, 245, 0.20) !important;
+}
+body.darkmode #links.section,
+body.darkmode #sendpo.section,
+body.darkmode #chase-delivery.section {
+  background: rgba(65, 71, 79, 0.60) !important;
+}
+</style>
+</html>
+
+<style id="independent-note-window-fix">
+.circuit-note-modal{position:fixed;z-index:9999;display:none;width:min(300px,calc(100vw - 28px));padding:0;background:transparent;filter:drop-shadow(0 9px 12px rgba(0,0,0,.2));}
+.circuit-note-modal.is-open{display:block;animation:notePopupIn .18s ease-out both;}
+.circuit-note-card{position:relative;box-sizing:border-box;background:#d9dee4;border:0;border-radius:2px 2px 3px 3px;padding:22px 17px 15px;color:#263445;font-family:inherit;box-shadow:0 2px 3px rgba(0,0,0,.08),0 10px 24px rgba(20,35,45,.18);transform:rotate(-.6deg);transition:background .15s ease,color .15s ease;}
+.circuit-note-heading{font-size:14px;font-weight:700;margin:0 0 12px;padding-right:68px;letter-spacing:.1px;color:#263445;}
+.circuit-note-pin{position:absolute;z-index:2;top:5px;right:25px;width:36px;height:36px;display:flex;align-items:center;justify-content:center;border:1px solid rgba(0,145,255,.32);border-radius:6px;padding:3px;background:rgba(255,255,255,.72);color:#00A3FF;cursor:pointer;}
+.circuit-note-pin svg{width:27px;height:27px;display:block;stroke:currentColor;stroke-width:2.5;filter:drop-shadow(0 0 3px rgba(0,163,255,.38));}
+.circuit-note-pin.is-pinned{background:rgba(0,145,255,.15);border-color:#008cff;color:#008cff;box-shadow:0 0 8px rgba(0,145,255,.25);}
+.circuit-note-text{display:block;width:100%;min-height:130px;resize:vertical;box-sizing:border-box;border:0;border-top:1px solid rgba(48,65,85,.18);border-radius:0;background:repeating-linear-gradient(to bottom,#d9dee4 0,#d9dee4 25px,rgba(76,94,116,.2) 26px,#d9dee4 27px);color:#263445;padding:8px 3px;font:inherit;line-height:27px;outline:none;}
+.circuit-note-card.note-two:before{background:rgba(81,174,255,.38);border-color:rgba(35,139,237,.35);}
+.circuit-note-card.note-two:after{border-top-color:#cbd3dc;}
+.circuit-note-card.note-two .circuit-note-text{background:repeating-linear-gradient(to bottom,#d9dee4 0,#d9dee4 25px,rgba(76,94,116,.2) 26px,#d9dee4 27px);}
+@media(prefers-reduced-motion:reduce){.circuit-note-modal.is-open{animation:none;}}
+</style>
+
+
+
+
+<style id="links-buttons-match-sendpo-final">
+/* Links buttons: match Send PO button colors and states only. Preserve dimensions, layout, circuits and functionality. */
+body:not(.darkmode) #links .po-button,
+body:not(.darkmode) #links .buttons-container button,
+body:not(.darkmode) #links .link-card .po-button {
+  background: #E9EEF4 !important;
+  background-image: none !important;
+  color: #34465B !important;
+  border: 1px solid transparent !important;
+  outline: none !important;
+  box-shadow: 0 1px 3px rgba(31,55,82,.07) !important;
+  text-shadow: none !important;
+}
+body:not(.darkmode) #links .po-button:hover,
+body:not(.darkmode) #links .buttons-container button:hover,
+body:not(.darkmode) #links .link-card .po-button:hover {
+  background: #E1EDFA !important;
+  background-image: none !important;
+  color: #607D96 !important;
+  border-color: transparent !important;
+  box-shadow: 0 3px 8px rgba(61,112,164,.12) !important;
+  text-shadow: none !important;
+}
+body:not(.darkmode) #links .po-button:active,
+body:not(.darkmode) #links .buttons-container button:active,
+body:not(.darkmode) #links .link-card .po-button:active {
+  background: #D6E6F7 !important;
+  background-image: none !important;
+  color: #34465B !important;
+  border-color: transparent !important;
+  box-shadow: inset 0 1px 2px rgba(56,96,145,.08) !important;
+}
+.darkmode #links .po-button,
+.darkmode #links .buttons-container button,
+.darkmode #links .link-card .po-button {
+  background: #59616B !important;
+  background-image: none !important;
+  color: #FFFFFF !important;
+  border: 0 !important;
+  outline: none !important;
+  box-shadow: none !important;
+  text-shadow: none !important;
+}
+.darkmode #links .po-button:hover,
+.darkmode #links .buttons-container button:hover,
+.darkmode #links .link-card .po-button:hover {
+  background: #687381 !important;
+  background-image: none !important;
+  color: #FFFFFF !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  text-shadow: none !important;
+}
+.darkmode #links .po-button:active,
+.darkmode #links .buttons-container button:active,
+.darkmode #links .link-card .po-button:active {
+  background: #59616B !important;
+  background-image: none !important;
+  color: #FFFFFF !important;
+  border: 0 !important;
+  box-shadow: inset 0 1px 2px rgba(0,0,0,.12) !important;
+}
+
+
+/* Menu: warm greige tones in light mode only; preserve dark mode and existing effects. */
+body:not(.darkmode) #menu > button.menu-btn:nth-of-type(-n+4) {
+  background: linear-gradient(135deg, #D5CBBB, #C4B7A4) !important;
+  color: #34465B !important;
+}
+body:not(.darkmode) #menu > button.menu-btn:nth-of-type(-n+4):hover {
+  background: linear-gradient(135deg, #C8B9A4, #B9A88F) !important;
+  color: #263449 !important;
+}
+body:not(.darkmode) #menu > button.menu-btn:nth-of-type(-n+4).active {
+  background: linear-gradient(135deg, #B9A88F, #AA987E) !important;
+  color: #263449 !important;
+}
+body:not(.darkmode) #menu > button.menu-btn:nth-of-type(-n+4):active {
+  background: linear-gradient(135deg, #B9A88F, #AA987E) !important;
+  color: #263449 !important;
+}
+
+</style>
+
+
+<style id="light-mode-menu-buttons-moon-gray">
+/* Mode clair uniquement : gris neutre assorti au fond du bouton lune. */
+body:not(.darkmode) #menu > button.menu-btn:nth-of-type(-n+4) {
+  background: #D2D1D0 !important;
+  color: #34465B !important;
+}
+body:not(.darkmode) #menu > button.menu-btn:nth-of-type(-n+4):hover {
+  background: #C8C7C5 !important;
+  color: #263449 !important;
+}
+body:not(.darkmode) #menu > button.menu-btn:nth-of-type(-n+4).active,
+body:not(.darkmode) #menu > button.menu-btn:nth-of-type(-n+4):active {
+  background: #BDBCB9 !important;
+  color: #263449 !important;
+}
+</style>
+
+<style id="blue-text-hover-menu-and-dark-mode">
+/* Texte bleu au survol : les 4 premiers boutons du menu dans les deux modes,
+   et tous les boutons en mode sombre. Aucun changement de fond ni de dimension. */
+body:not(.darkmode) #menu > button.menu-btn:nth-of-type(-n+4):hover,
+body:not(.darkmode) #menu > button.menu-btn:nth-of-type(-n+4):focus-visible,
+body.darkmode button:hover,
+body.darkmode button:focus-visible {
+  color: #1686E8 !important;
+}
+</style>
